@@ -1,3 +1,13 @@
+# BrainSTEM/Inception README
+## What is included in this repo other than the standard FTC library?
+- [PhotonFTC](https://github.com/Eeshwar-Krishnan/PhotonFTC)
+- [Road Runner](https://github.com/acmerobotics/road-runner)
+
+Please refer to the documentation in those two repos to make sure you are using them correctly.
+
+## brainlib FTC Library
+This is a library I developed a few years ago, and it has some useful classes for FTC robots.
+
 ## NOTICE
 
 This repository contains the public FTC SDK for the Freight Frenzy (2021-2022) competition season.

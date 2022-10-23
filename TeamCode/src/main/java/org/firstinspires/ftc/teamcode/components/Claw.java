@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.autonomous.cancellers.TimerCanceller;
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
+import org.firstinspires.ftc.teamcode.autonomous.enums.FlipPosition;
 import org.firstinspires.ftc.teamcode.utils.Component;
 
 public class Claw implements Component {
@@ -13,12 +14,17 @@ public class Claw implements Component {
     }
 
     private final ServoImplEx clawServo;
+    private final ServoImplEx rightFlipServo;
+    private final ServoImplEx leftFlipServo;
+
     private Goal currentGoal;
 
     private TimerCanceller clawStopCanceller = new TimerCanceller(500);
 
     public Claw(HardwareMap map) {
         clawServo = map.get(ServoImplEx.class,"clawServo");
+        leftFlipServo = map.get(ServoImplEx.class,"leftFlipServo");
+        rightFlipServo = map.get(ServoImplEx.class,"RightFlipServo");
 
         currentGoal = Goal.OPEN_LOOP;
     }
@@ -74,10 +80,23 @@ public class Claw implements Component {
     public void setClawServoPosition(ClawPosition position) {
         switch (position) {
             case OPEN:
-                clawServo.setPosition(1);
+                clawServo.setPosition(0.2);
                 break;
             case CLOSED:
-                clawServo.setPosition(0.7);
+                clawServo.setPosition(0.9);
+                break;
+        }
+    }
+
+    public void setFlipServoPosition(FlipPosition position) {
+        switch (position) {
+            case COLLECT:
+                rightFlipServo.setPosition(1);
+                leftFlipServo.setPosition(0);
+                break;
+            case DEPOSIT:
+                rightFlipServo.setPosition(0.3);
+                leftFlipServo.setPosition(0.7);
                 break;
         }
     }

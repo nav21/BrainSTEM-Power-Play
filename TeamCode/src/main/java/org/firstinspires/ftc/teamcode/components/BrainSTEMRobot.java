@@ -14,6 +14,8 @@ import java.util.ArrayList;
 public class BrainSTEMRobot {
     //Various components of the TeleOp robot
     public BMecanumDrive drive;
+    public Claw claw;
+    public Lift lift;
     // PORTME public Collector collector;
     // PORTME public Depositor depositor;
 
@@ -34,20 +36,15 @@ public class BrainSTEMRobot {
         //Initialize robot components
         drive = new BMecanumDrive(map);
 
-        // PORTME collector = new Collector(map);
 
-        // PORTME depositor = new Depositor(map);
+       lift = new Lift(map);
 
-        // PORTME lift = new Lift(map);
-
-        // PORTME claw = new Claw(map);
+        claw = new Claw(map);
 
         //Add all components to an array list so they can be easily initialized
         components.add(drive);
-        // PORTME components.add(collector);
-        // PORTME components.add(depositor);
-        // PORTME components.add(lift);
-        // PORTME components.add(claw);
+        components.add(lift);
+        components.add(claw);
     }
 
     /**

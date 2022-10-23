@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
 
 @TeleOp
-public class ServoGateTest extends LinearOpMode {
+public class ServoClawTest extends LinearOpMode {
     private StickyButton backward = new StickyButton();
     private StickyButton forward = new StickyButton();
 

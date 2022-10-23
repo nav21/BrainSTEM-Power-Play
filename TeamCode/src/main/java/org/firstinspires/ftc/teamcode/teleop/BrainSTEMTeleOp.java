@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.buttons.ToggleButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
+import org.firstinspires.ftc.teamcode.utils.SmoothDrive;
 import org.firstinspires.ftc.teamcode.components.Claw;
 import org.firstinspires.ftc.teamcode.components.Lift;
 
@@ -279,6 +280,10 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
         robot.initTeleOp();
 
+        // TODO
+        // This is a 'better' way to do the smooth drive where we push everything into a class
+        // SmoothDrive sd = new SmoothDrive( gamepad1 );
+
         while (!opModeIsActive() && !isStopRequested()) {
             //Status to show if telemetry was initialized
             telemetry.addData("Status", "Initialized");
@@ -289,6 +294,11 @@ public class BrainSTEMTeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             mapControls();
             driveControls( robot, gamepad1, 1 );
+
+            // TODO
+            // This is a 'better' way to do the smooth drive where we push everything into a class
+            // sd.update(Math.toDegrees(robot.drive.getRawExternalHeading()));
+            // robot.drive.setMotorPowers(sd.l_f_motor_power, sd.l_b_motor_power, sd.r_b_motor_power, sd.r_f_motor_power);
 
             /*
             //If the x value of the left stick, the y value of the left stick, or the x value of

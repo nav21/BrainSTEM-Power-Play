@@ -37,7 +37,7 @@ public class SmoothDrive {
     // Mech drive related variables
     private int[] speedIdx = new int[] {0, 0};
     private double[] speedModifier = new double[] {0.75, 0.90};
-    private boolean[] FODEnable = new boolean[] {false, false};
+    private boolean[] FODEnable = new boolean[] {false, true};
     private double[] forward = new double[2], strafe = new double[2], rotate = new double[2];
     private double[] prevForward = new double[2], prevStrafe = new double[2], prevRotate = new double[2];
     private double[] prevTime = new double[2];

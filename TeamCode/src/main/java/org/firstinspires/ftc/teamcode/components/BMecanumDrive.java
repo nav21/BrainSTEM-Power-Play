@@ -49,6 +49,7 @@ import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 import org.firstinspires.ftc.teamcode.utils.Component;
+import org.firstinspires.ftc.teamcode.util.AxisDirection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +90,6 @@ public class BMecanumDrive extends MecanumDrive implements Component{
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-
         // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
         // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
         //
@@ -110,10 +110,7 @@ public class BMecanumDrive extends MecanumDrive implements Component{
         // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
         //
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
-        // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.YXZ, AxesSigns.NPN);
+        BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
     }
 
     public BMecanumDrive(HardwareMap hardwareMap) { this(hardwareMap, 0.5); }
@@ -249,8 +246,6 @@ public class BMecanumDrive extends MecanumDrive implements Component{
     public Pose2d getLastError() {
         return trajectorySequenceRunner.getLastPoseError();
     }
-
-
 
     public void reset() {
 

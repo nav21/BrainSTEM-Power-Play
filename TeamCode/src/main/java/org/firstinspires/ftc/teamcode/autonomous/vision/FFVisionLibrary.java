@@ -4,15 +4,34 @@ package org.firstinspires.ftc.teamcode.autonomous.vision;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utils.AprilTagDetectionPipeline;
+import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import java.util.ArrayList;
+
 public class FFVisionLibrary {
     private LinearOpMode opMode;
     OpenCvWebcam webcam;
     public TeamMarkerDetector teamMarkerDetector;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 1;
+    double fy = 1;
+    double cx = 1;
+    double cy = 1;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    static final double FEET_PER_METER = 3.28084;
 
     public FFVisionLibrary(LinearOpMode opMode)
     {
@@ -20,13 +39,12 @@ public class FFVisionLibrary {
     }
 
     public void init() {
-        teamMarkerDetector = new TeamMarkerDetector();
-
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance()
                 .createWebcam(opMode.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        webcam.setPipeline(teamMarkerDetector);
+        webcam.setPipeline(aprilTagDetectionPipeline);
 
         webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -50,7 +68,8 @@ public class FFVisionLibrary {
                  * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
                  * away from the user.
                  */
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                // Changed by ToddS webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -63,8 +82,23 @@ public class FFVisionLibrary {
         });
     }
 
-    public TeamMarkerPosition getTeamMarkerPosition() {
-        return teamMarkerDetector.getTeamMarkerPosition();
+    // First 20 AprilTags here:
+    // https://www.dotproduct3d.com/uploads/8/5/1/1/85115558/apriltags1-20.pdf
+    public SignalSleevePosition getSignalSleevePosition() {
+
+        ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+        int tag_id = -1;
+
+        if(currentDetections.size() != 0) {
+            tag_id = currentDetections.get(0).id;
+        }
+
+        switch (tag_id) {
+            case 1:  return(SignalSleevePosition.ONE);
+            case 2:  return(SignalSleevePosition.TWO);
+            case 3:  return(SignalSleevePosition.THREE);
+            default: return(SignalSleevePosition.UNKNOWN);
+        }
     }
 
     public void stopVision() {

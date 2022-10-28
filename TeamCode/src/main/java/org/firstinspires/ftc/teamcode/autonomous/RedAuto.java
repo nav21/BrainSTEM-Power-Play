@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
 import org.firstinspires.ftc.teamcode.autonomous.vision.AllianceColor;
 import org.firstinspires.ftc.teamcode.autonomous.vision.FFVisionLibrary;
+import org.firstinspires.ftc.teamcode.autonomous.vision.SignalSleevePosition;
 import org.firstinspires.ftc.teamcode.autonomous.vision.TeamMarkerDetector;
 import org.firstinspires.ftc.teamcode.autonomous.vision.TeamMarkerPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
@@ -27,9 +28,9 @@ import org.firstinspires.ftc.teamcode.components.Lift;
 public class RedAuto extends BaseAuto {
     public static double DISTANCE = 24; // inches
 
-    public void runMain(AutoBrainSTEMRobot robot, TeamMarkerPosition teamMarkerPosition) {
-        Pose2d startPose = new Pose2d(-36, -63.5, Math.toRadians(-90));
+    public void runMain(AutoBrainSTEMRobot robot, SignalSleevePosition signalSleevePosition) {
         /*
+        Pose2d startPose = new Pose2d(-36, -63.5, Math.toRadians(-90));
         Trajectory trajectory1 = robot.drive.trajectoryBuilder(startPose)
                 .back(DISTANCE * 0.9)
                 .addTemporalMarker(1, () -> {

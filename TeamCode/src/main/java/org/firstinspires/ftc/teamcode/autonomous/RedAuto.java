@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
 import org.firstinspires.ftc.teamcode.autonomous.vision.AllianceColor;
-import org.firstinspires.ftc.teamcode.autonomous.vision.FFVisionLibrary;
+import org.firstinspires.ftc.teamcode.autonomous.vision.VisionLibrary;
 import org.firstinspires.ftc.teamcode.autonomous.vision.SignalSleevePosition;
 import org.firstinspires.ftc.teamcode.autonomous.vision.TeamMarkerDetector;
 import org.firstinspires.ftc.teamcode.autonomous.vision.TeamMarkerPosition;

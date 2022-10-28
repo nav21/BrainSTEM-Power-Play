@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 
-public class FFVisionLibrary {
+public class VisionLibrary {
     private LinearOpMode opMode;
     OpenCvWebcam webcam;
     public TeamMarkerDetector teamMarkerDetector;
@@ -33,7 +33,7 @@ public class FFVisionLibrary {
 
     static final double FEET_PER_METER = 3.28084;
 
-    public FFVisionLibrary(LinearOpMode opMode)
+    public VisionLibrary(LinearOpMode opMode)
     {
         this.opMode = opMode;
     }

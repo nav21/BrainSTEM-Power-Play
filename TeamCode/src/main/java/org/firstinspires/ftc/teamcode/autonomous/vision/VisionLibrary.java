@@ -93,10 +93,10 @@ public class VisionLibrary {
             tag_id = currentDetections.get(0).id;
         }
 
-        switch (tag_id) {
-            case 1:  return(SignalSleevePosition.ONE);
-            case 2:  return(SignalSleevePosition.TWO);
-            case 3:  return(SignalSleevePosition.THREE);
+        switch (tag_id % 3) {
+            case 0:  return(SignalSleevePosition.ONE);
+            case 1:  return(SignalSleevePosition.TWO);
+            case 2:  return(SignalSleevePosition.THREE);
             default: return(SignalSleevePosition.UNKNOWN);
         }
     }

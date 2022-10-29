@@ -2,8 +2,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
-import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
+import org.firstinspires.ftc.teamcode.autonomous.enums.FlipPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
 
@@ -40,13 +39,14 @@ public class ServoClawTest extends LinearOpMode {
         Right Bumper: Toggle collector on/off
         Right Trigger: Move lift up
      */
-    private boolean collectorFlipServoMiddle;
-
+    private boolean collectorClawServoOut;
+    private boolean collectorClawServoIn;
     private static double position = 0.2;
 
 
     private void mapControls() {
-
+        collectorClawServoIn = gamepad1.a;
+        collectorClawServoOut = gamepad1.b;
 
     }
 
@@ -65,6 +65,16 @@ public class ServoClawTest extends LinearOpMode {
         while (opModeIsActive()) {
             mapControls();
 
+            if (collectorClawServoIn){
+                robot.claw.setFlipServoPosition(FlipPosition.DEPOSIT);
+                telemetry.addData("Status", "jssgsbsgbg");
+                telemetry.update();
+            }
+            if (collectorClawServoIn){
+                robot.claw.setFlipServoPosition(FlipPosition.COLLECT);
+                telemetry.addData("Status", "jjjjjjjjjjj");
+                telemetry.update();
+            }
 //            robot.collector.disableFlipServos();
 //
 //            //If the x value of the left stick, the y value of the left stick, or the x value of
@@ -84,6 +94,6 @@ public class ServoClawTest extends LinearOpMode {
 //                robot.collector.setFlipServosPosition(CollectorPosition.TILTED_UP);
 //                telemetry.addData("test", "testt");
 //                telemetry.update();
-            }
         }
     }
+}

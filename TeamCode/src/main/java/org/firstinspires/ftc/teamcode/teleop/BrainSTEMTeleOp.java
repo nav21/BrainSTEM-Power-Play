@@ -21,7 +21,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     // private double leftTuningFactor = 1;
     // private double rightTuningFactor = 1;
     // private double driveInterpolationFactor = 2;
-    // private static final double THRESHOLD = 0.001;
+    private static final double THRESHOLD = 0.001;
 
     /*
     private ToggleButton collectorToggle = new ToggleButton();
@@ -67,7 +67,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
 
     private ElapsedTime runtime = new ElapsedTime();
-    /*
+
     private boolean collectorOn;
     private boolean collectorTransfer;
 
@@ -85,17 +85,16 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     private int depositorToggleHits = 0;
 
     private boolean modeToggle;
-    */
+
 
     private void mapControls() {
         // drive = Math.pow(Math.abs(gamepad1.left_stick_y), driveInterpolationFactor) * Math.signum(-gamepad1.left_stick_y)/2.25;
         // turn = (Math.pow(Math.abs(gamepad1.right_stick_x), driveInterpolationFactor) * Math.signum(-gamepad1.right_stick_x))/3.5;
 
-        /*
+
         collectorOn = gamepad1.right_bumper;
         collectorTransfer = gamepad1.left_bumper;
 
-        toggleCarouselOn = carouselToggle.update(gamepad1.dpad_down);
         carouselReverse = gamepad1.dpad_up;
 
         collectorGateOut = gamepad1.y;
@@ -104,12 +103,12 @@ public class BrainSTEMTeleOp extends LinearOpMode {
         moveLiftUp = gamepad1.right_trigger;
         moveLiftDown = gamepad1.left_trigger;
 
-        resetDepositorToggle = gamepad1.right_stick_button;
-        depositorStickyButton.update(gamepad1.left_stick_button);
-        depositorToggleHits += depositorStickyButton.getState() ? 1 : 0;
+       // resetDepositorToggle = gamepad1.right_stick_button;
+//        depositorStickyButton.update(gamepad1.left_stick_button);
+//        depositorToggleHits += depositorStickyButton.getState() ? 1 : 0;
+//
+//        modeToggle = modeToggleButton.update(gamepad1.x);
 
-        modeToggle = modeToggleButton.update(gamepad1.x);
-        */
     }
 
     @Override
@@ -136,6 +135,17 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             sd.update(Math.toDegrees(robot.drive.getRawExternalHeading()));
             robot.drive.setMotorPowers(sd.l_f_motor_power, sd.l_b_motor_power, sd.r_b_motor_power, sd.r_f_motor_power);
 
+
+            if(moveLiftUp > THRESHOLD) {
+                robot.lift.setMotorPowers(moveLiftUp, -moveLiftUp, -moveLiftUp, moveLiftUp);
+                telemetry.addLine("Running Motor: Front Left");
+            } else if(moveLiftDown > THRESHOLD) {
+                robot.lift.setMotorPowers(-moveLiftDown, moveLiftDown, moveLiftDown, -moveLiftDown);
+                telemetry.addLine("Running Motor: Rear Left");
+            } else {
+                robot.lift.setMotorPowers(0.05, -0.05, -0.05, 0.05);
+                telemetry.addLine("Running Motor: None");
+            }
             /*
             //If the x value of the left stick, the y value of the left stick, or the x value of
             //the right stick is greater than the THRESHOLD value, move the robot

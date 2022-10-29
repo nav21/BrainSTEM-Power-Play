@@ -1,15 +1,10 @@
 package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.autonomous.cancellers.TimerCanceller;
-import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
 import org.firstinspires.ftc.teamcode.utils.Component;
-import org.firstinspires.ftc.teamcode.wrappers.RevMagnetSensor;
 
 /**
  * Created by parvs on 11/9/2018.
@@ -32,10 +27,10 @@ public class Lift implements Component {
     private static final int medPosition = 555;
     private static final int highPosition = 1400;
 
-    private final DcMotor liftMotor1;
-    private final DcMotor liftMotor2;
-    private final DcMotor liftMotor3;
-    private final DcMotor liftMotor4;
+    private final DcMotor fl;
+    private final DcMotor fr;
+    private final DcMotor bl;
+    private final DcMotor br;
     // private final RevMagnetSensor liftLimitSwitch;
 
     //TODO: adjust these values maybe
@@ -46,10 +41,10 @@ public class Lift implements Component {
     private Mode mode = Mode.LOW;
 
     public Lift(HardwareMap map) {
-        liftMotor1 = map.dcMotor.get("liftMotor1");
-        liftMotor2 = map.dcMotor.get("liftMotor2");
-        liftMotor3 = map.dcMotor.get("liftMotor3");
-        liftMotor4 = map.dcMotor.get("liftMotor4");
+        fl = map.dcMotor.get("fl");
+        fr = map.dcMotor.get("fr");
+        bl = map.dcMotor.get("bl");
+        br = map.dcMotor.get("br");
         // liftLimitSwitch = new RevMagnetSensor(map.get(DigitalChannel.class, "liftLimitSwitch"));
 
         // PORTME
@@ -114,12 +109,13 @@ public class Lift implements Component {
         return failures;
     }
 
-    public void setLiftPower(double power) {
-        liftMotor1.setPower(power);
-        liftMotor2.setPower(power);
-        liftMotor3.setPower(power);
-        liftMotor4.setPower(power);
+    public void setMotorPowers(double vLF, double vLR, double vRR, double vRF) {
+        fl.setPower(vLF);
+        fr.setPower(vLR);
+        bl.setPower(vRR);
+        br.setPower(vRF);
     }
+
 
     public void holdOrStopLift() {
         /*  PORTME
@@ -143,7 +139,7 @@ public class Lift implements Component {
     }
 
     // PORTME
-    public double getLiftEncoderTicks() {return liftMotor1.getCurrentPosition();}
+    public double getLiftEncoderTicks() {return fl.getCurrentPosition();}
 
     // PORTME
     public void runLiftToPosition(Mode mode) {

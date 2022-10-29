@@ -91,6 +91,8 @@ public class VisionLibrary {
 
         if(currentDetections.size() != 0) {
             tag_id = currentDetections.get(0).id;
+        } else {
+            return(SignalSleevePosition.UNKNOWN);
         }
 
         switch (tag_id % 3) {

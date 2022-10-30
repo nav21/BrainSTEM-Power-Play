@@ -87,16 +87,16 @@ public class Claw implements Component {
                 break;
         }
     }
-
+// right collect 0.83 left collect 0.197 right deposit 0.0245 left deposit 1
     public void setFlipServoPosition(FlipPosition position) {
         switch (position) {
             case COLLECT:
-                rightFlipServo.setPosition(1);
-                leftFlipServo.setPosition(0);
+                rightFlipServo.setPosition(0.83);
+                leftFlipServo.setPosition(0.197);
                 break;
             case DEPOSIT:
-                rightFlipServo.setPosition(0.3);
-                leftFlipServo.setPosition(0.7);
+                rightFlipServo.setPosition(0.0245);
+                leftFlipServo.setPosition(1);
                 break;
         }
     }

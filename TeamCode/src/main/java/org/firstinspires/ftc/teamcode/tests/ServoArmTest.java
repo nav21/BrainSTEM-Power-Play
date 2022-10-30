@@ -55,6 +55,8 @@ public class ServoArmTest extends LinearOpMode {
         // Initialize a new robot object
         BrainSTEMRobot robot = new BrainSTEMRobot(this);
 
+        FlipPosition prevState = FlipPosition.INIT;
+
         while (!opModeIsActive() && !isStopRequested()) {
             //Status to show if telemetry was initialized
             telemetry.addData("Status", "Initialized");
@@ -65,13 +67,15 @@ public class ServoArmTest extends LinearOpMode {
         while (opModeIsActive()) {
             mapControls();
 
-            if (collectorFlipServoOut){
+            if (collectorFlipServoOut && (prevState != FlipPosition.DEPOSIT)){
                 robot.claw.setFlipServoPosition(FlipPosition.DEPOSIT);
+                prevState = FlipPosition.DEPOSIT ;
                 telemetry.addData("Status", "jssgsbsgbg");
                 telemetry.update();
             }
-            if (collectorFlipServoIn){
+            if (collectorFlipServoIn && (prevState != FlipPosition.COLLECT)){
                 robot.claw.setFlipServoPosition(FlipPosition.COLLECT);
+                prevState = FlipPosition.COLLECT ;
                 telemetry.addData("Status", "jjjjjjjjjjj");
                 telemetry.update();
             }

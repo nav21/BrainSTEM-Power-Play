@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.roadrunner.util.NanoClock;
+
 
 import org.firstinspires.ftc.teamcode.autonomous.cancellers.TimerCanceller;
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
@@ -89,14 +92,30 @@ public class Claw implements Component {
     }
 // right collect 0.83 left collect 0.197 right deposit 0.0245 left deposit 1
     public void setFlipServoPosition(FlipPosition position) {
+        double maxRight=0.83;
+        double maxLeft=1.0;
+        double minRight=0.0245;
+        double minLeft=0.197;
+        double deltaRight = maxRight-minRight;
+        double deltaLeft = maxLeft-minLeft;
+        NanoClock clock = NanoClock.system();
+        double tgt = 0;
         switch (position) {
             case COLLECT:
-                rightFlipServo.setPosition(0.83);
-                leftFlipServo.setPosition(0.197);
+                for (double i =0; i <= 1.0; i += 0.01) {
+                    rightFlipServo.setPosition(minRight+(deltaRight*i));
+                    leftFlipServo.setPosition(maxLeft-(deltaLeft*i));
+                    tgt = clock.seconds()+0.020;
+                    while (clock.seconds() < tgt) { }
+                }
                 break;
             case DEPOSIT:
-                rightFlipServo.setPosition(0.0245);
-                leftFlipServo.setPosition(1);
+                for (double i =0; i <= 1.0; i += 0.01) {
+                    rightFlipServo.setPosition(maxRight-(deltaRight*i));
+                    leftFlipServo.setPosition(minLeft+(deltaLeft*i));
+                    tgt = clock.seconds()+0.020;
+                    while (clock.seconds() < tgt) { }
+                }
                 break;
         }
     }

@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.roadrunner.util.NanoClock;
+
 
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
@@ -29,6 +31,23 @@ public class RedAuto extends BaseAuto {
     public static double DISTANCE = 24; // inches
 
     public void runMain(AutoBrainSTEMRobot robot, SignalSleevePosition signalSleevePosition) {
+        /*
+        // Example of 'Async' use to allow HW updating for things like slower servos and SWPIDs
+        // It's possible that your 'auto' class already handles this with threads, but I'm not sure.
+
+        // Tell Roadrunner what to do
+        robot.drive.followTrajectoryAsync(trajectory1);
+        // This will update drive and components until the drive motion is completed.
+        CheckWait(true, true, 0, 0);
+
+        robot.drive.turnAsync(Math.toRadians(-44));
+        CheckWait(true, true, 0, 0);
+
+        robot.drive.followTrajectoryAsync(trajectory2);
+        // This is a better 'sleep', it will keep updating our components for 5500ms even if the drive motion completes
+        CheckWait(true, true, 5500, 5500);
+        */
+
         /*
         Pose2d startPose = new Pose2d(-36, -63.5, Math.toRadians(-90));
         Trajectory trajectory1 = robot.drive.trajectoryBuilder(startPose)

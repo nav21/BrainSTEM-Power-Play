@@ -41,8 +41,8 @@ public class Lift implements Component {
     private Mode mode = Mode.LOW;
 
     public Lift(HardwareMap map) {
-        fl = map.dcMotor.get("fl");
-        fr = map.dcMotor.get("fr");
+        fl = map.dcMotor.get("flandperpendicularEncoder");
+        fr = map.dcMotor.get("frandparallelEncoder");
         bl = map.dcMotor.get("bl");
         br = map.dcMotor.get("br");
         // liftLimitSwitch = new RevMagnetSensor(map.get(DigitalChannel.class, "liftLimitSwitch"));

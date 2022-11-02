@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.FlipPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
@@ -41,10 +42,14 @@ public class ServoArmTest extends LinearOpMode {
      */
     private boolean collectorFlipServoOut;
     private boolean collectorFlipServoIn;
+    private boolean collectorClawServoOut;
+    private boolean collectorClawServoIn;
     private static double position = 0.2;
 
 
     private void mapControls() {
+        collectorClawServoIn = gamepad1.y;
+        collectorClawServoOut = gamepad1.x;
         collectorFlipServoIn = gamepad1.a;
         collectorFlipServoOut = gamepad1.b;
 
@@ -76,6 +81,16 @@ public class ServoArmTest extends LinearOpMode {
             if (collectorFlipServoIn && (prevState != FlipPosition.COLLECT)){
                 robot.claw.setFlipServoPosition(FlipPosition.COLLECT);
                 prevState = FlipPosition.COLLECT ;
+                telemetry.addData("Status", "jjjjjjjjjjj");
+                telemetry.update();
+            }
+            if (collectorClawServoIn){
+                robot.claw.setClawServoPosition(ClawPosition.OPEN);
+                telemetry.addData("Status", "jssgsbsgbg");
+                telemetry.update();
+            }
+            if (collectorClawServoOut){
+                robot.claw.setClawServoPosition(ClawPosition.CLOSED);
                 telemetry.addData("Status", "jjjjjjjjjjj");
                 telemetry.update();
             }

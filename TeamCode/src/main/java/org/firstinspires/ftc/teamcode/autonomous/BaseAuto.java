@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.autonomous.vision.AllianceColor;
@@ -75,6 +76,7 @@ public abstract class BaseAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        PhotonCore.enable();
         robot = new AutoBrainSTEMRobot(this);
         VisionLibrary visionLibrary = new VisionLibrary(this);
 
@@ -87,11 +89,12 @@ public abstract class BaseAuto extends LinearOpMode {
 
 
         while (!opModeIsActive() && !isStopRequested()) {
-            signalSleevePosition = visionLibrary.getSignalSleevePosition();
+
+           signalSleevePosition = visionLibrary.getSignalSleevePosition();
 
             telemetry.addData("Status", "Waiting...");
-            telemetry.addData("Signal Pos", signalSleevePosition);
-            telemetry.update();
+         telemetry.addData("Signal Pos", signalSleevePosition);
+          telemetry.update();
         }
 
         visionLibrary.stopVision();

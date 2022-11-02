@@ -60,8 +60,8 @@ import java.util.List;
  */
 @Config
 public class BMecanumDrive extends MecanumDrive implements Component{
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3, 0, 0.01);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(4, 0, 0.01);
 
     // TODO
     public static double LATERAL_MULTIPLIER = 1;
@@ -158,7 +158,7 @@ public class BMecanumDrive extends MecanumDrive implements Component{
         leftRear.setDirection(DcMotor.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }

@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.tests.necessary;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
 
 import org.firstinspires.ftc.teamcode.components.BMecanumDrive;
 
@@ -18,6 +21,7 @@ import org.firstinspires.ftc.teamcode.components.BMecanumDrive;
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        PhotonCore.enable();
         BMecanumDrive drive = new BMecanumDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -25,6 +29,7 @@ public class LocalizationTest extends LinearOpMode {
         waitForStart();
 
         while (!isStopRequested()) {
+
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y,

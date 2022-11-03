@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import org.firstinspires.ftc.teamcode.autonomous.cancellers.TimerCanceller;
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.FlipPosition;
+import org.firstinspires.ftc.teamcode.util.TimedServo;
 import org.firstinspires.ftc.teamcode.utils.Component;
 
 public class Claw implements Component {
@@ -20,6 +21,10 @@ public class Claw implements Component {
     private final ServoImplEx clawServoLeft;
     private final ServoImplEx rightFlipServo;
     private final ServoImplEx leftFlipServo;
+    // Alternate timed servo code
+    // private final TimedServo timedRightFlipServo;
+    // private final TimedServo timedLeftFlipServo;
+
 
     private Goal currentGoal;
 
@@ -30,6 +35,9 @@ public class Claw implements Component {
         clawServoLeft = map.get(ServoImplEx.class,"clawServoLeft");
         leftFlipServo = map.get(ServoImplEx.class,"leftFlipServo");
         rightFlipServo = map.get(ServoImplEx.class,"RightFlipServo");
+        // Alternate timed servo code
+        // timedLeftFlipServo = new TimedServo(leftFlipServo);
+        // timedRightFlipServo = new TimedServo(rightFlipServo);
 
         currentGoal = Goal.OPEN_LOOP;
     }
@@ -50,6 +58,9 @@ public class Claw implements Component {
 
     @Override
     public void update() {
+        // Alternate with TimedServo
+        // timedRightFlipServo.update();
+        // timedLeftFlipServo.update();
         switch (currentGoal) {
             case OPEN_LOOP:
                 break;
@@ -106,6 +117,12 @@ public class Claw implements Component {
         double tgt = 0;
         switch (position) {
             case COLLECT:
+                // The 'old way'
+                // rightFlipServo.setPosition(maxRight);
+                // leftFlipServo.setPosition(minLeft);
+                // Alternate with TimedServo (enable update above)
+                // timedRightFlipServo.setPosition(maxRight, 1.5);
+                // timedLeftFlipServo.setPosition(minLeft, 1.5);
                 for (double i =0; i <= 1.0; i += 0.01) {
                     rightFlipServo.setPosition(maxRight-(deltaRight*i));
                     leftFlipServo.setPosition(minLeft+(deltaLeft*i));
@@ -114,6 +131,12 @@ public class Claw implements Component {
                 }
                 break;
             case DEPOSIT:
+                // The 'old way'
+                // rightFlipServo.setPosition(minRight);
+                // leftFlipServo.setPosition(maxLeft);
+                // Alternate with TimedServo (enable update above)
+                // timedRightFlipServo.setPosition(minRight, 1.5);
+                // timedLeftFlipServo.setPosition(maxLeft, 1.5);
                 for (double i =0; i <= 1.0; i += 0.01) {
                     rightFlipServo.setPosition(minRight+(deltaRight*i));
                     leftFlipServo.setPosition(maxLeft-(deltaLeft*i));

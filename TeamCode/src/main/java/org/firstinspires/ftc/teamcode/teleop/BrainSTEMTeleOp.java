@@ -94,7 +94,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     private int depositorToggleHits = 0;
 
     private boolean modeToggle;
-    private int modeToggleHits = 0;
+    private boolean modeToggleHits;
     private int mode = 0;
 
 
@@ -123,10 +123,10 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 //        depositorStickyButton.update(gamepad1.left_stick_button);
 //        depositorToggleHits += depositorStickyButton.getState() ? 1 : 0;
 //
-        modeThing = gamepad1.b;
+
        modeStickyButton.update(gamepad1.x);
       // modeButton =modeStickyButton.getState();
-       modeToggleHits += modeStickyButton.getState() ? 1 : 0;
+       modeToggleHits = modeStickyButton.getState();
 
     }
 
@@ -172,6 +172,14 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             else {
                 robot.lift.setMotorPowers(0, 0, 0, 0);
             }
+            if(moveLiftUp) {
+                robot.lift.setGoal(Lift.Goal.UP);
+                telemetry.addLine("Running Motaaor: Front Left");
+            } else if(moveLiftDown) {
+                robot.lift.setGoal(Lift.Goal.DOWN);
+                telemetry.addLine("Running a: Rear Left");
+            }
+
             /*
             //If the x value of the left stick, the y value of the left stick, or the x value of
             //the right stick is greater than the THRESHOLD value, move the robot
@@ -225,7 +233,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 //                robot.claw.setCurrentGoal(Claw.Goal.DEPOSIT);
 //            }
 
-            if (modeThing) {
+            if (modeToggleHits) {
                 mode += 1;
             }
 
@@ -244,6 +252,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
             telemetry.addData("Lift Mode", robot.lift.getMode());
             MOTOR_TICK_COUNT = robot.lift.getLiftEncoderTicks();
+            telemetry.addData("Modething", mode);
             telemetry.addData("Deposit Mode", MOTOR_TICK_COUNT);
            // telemetry.addData("Lift Limit Switch", robot.depositor.getLimitSwtichState());
 

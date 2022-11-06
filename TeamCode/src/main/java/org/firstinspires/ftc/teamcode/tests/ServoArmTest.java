@@ -72,7 +72,7 @@ public class ServoArmTest extends LinearOpMode {
         while (opModeIsActive()) {
             mapControls();
 
-            if (collectorFlipServoOut && (prevState != FlipPosition.DEPOSITMID)){
+            if (collectorFlipServoOut && (prevState != FlipPosition.DEPOSIT)){
 //                robot.claw.setFlipServoPosition(FlipPosition.DEPOSIT);
 //                prevState = FlipPosition.DEPOSIT ;
 //                telemetry.addData("Status", "jssgsbsgbg");

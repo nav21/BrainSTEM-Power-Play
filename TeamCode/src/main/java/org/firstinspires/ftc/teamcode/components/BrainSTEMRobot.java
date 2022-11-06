@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.utils.Component;
 
@@ -16,8 +18,7 @@ public class BrainSTEMRobot {
     public BMecanumDrive drive;
     public Claw claw;
     public Lift lift;
-    // PORTME public Collector collector;
-    // PORTME public Depositor depositor;
+    public VoltageSensor Vsense;
 
     //List of components to be initialized
     private final ArrayList<Component> components;
@@ -35,11 +36,19 @@ public class BrainSTEMRobot {
 
         //Initialize robot components
         drive = new BMecanumDrive(map);
-
-
-       lift = new Lift(map);
-
+        lift = new Lift(map);
         claw = new Claw(map);
+
+        for (VoltageSensor sensor : map.voltageSensor) {
+            if (Vsense == null) {
+                double voltage = sensor.getVoltage();
+                if (voltage > 0) {
+                    Vsense = sensor;
+                }
+            }
+        }
+
+        lift.MIN_LIFT_UP_PWR = Range.clip(0.2 + ((12.3 - Vsense.getVoltage())*0.1),0.1,0.3);
 
         //Add all components to an array list so they can be easily initialized
         components.add(drive);

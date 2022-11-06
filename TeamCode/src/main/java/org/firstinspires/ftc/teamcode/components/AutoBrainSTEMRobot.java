@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.components;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.utils.Component;
 import org.firstinspires.ftc.teamcode.components.Lift;
@@ -18,10 +20,9 @@ public class AutoBrainSTEMRobot implements Runnable
 {
     //Various components of the autonomous robot
     public BMecanumDrive drive;
-    // public Collector collector;
-    // public Depositor depositor;
-
-
+    public Claw claw;
+    public Lift lift;
+    public VoltageSensor Vsense;
 
     private Thread updateThread;
     private boolean started = false;
@@ -41,25 +42,31 @@ public class AutoBrainSTEMRobot implements Runnable
     {
         this.opMode = opMode;
 
-        //Get instance of hardware map
+        //Get instance of hardware map and telemetry
         HardwareMap map = opMode.hardwareMap;
 
         components = new ArrayList<>();
 
-        //Initialize robot drive train
+        //Initialize robot components
         drive = new BMecanumDrive(map);
-        // PORTME collector = new Collector(map);
-        // PORTME depositor = new Depositor(map);
-        // PORTME lift = new Lift(map);
-        // PORTME claw = new Claw(map);
+        lift = new Lift(map);
+        claw = new Claw(map);
+
+        for (VoltageSensor sensor : map.voltageSensor) {
+            if (Vsense == null) {
+                double voltage = sensor.getVoltage();
+                if (voltage > 0) {
+                    Vsense = sensor;
+                }
+            }
+        }
+
+        lift.MIN_LIFT_UP_PWR = Range.clip(0.2 + ((12.3 - Vsense.getVoltage())*0.1),0.1,0.3);
 
         //Add all components to an array list so they can be easily initialized
         components.add(drive);
-        // PORTME components.add(collector);
-        // PORTME components.add(depositor);
-        // PORTME components.add(lift);
-        // PORTME components.add(claw);
-
+        components.add(lift);
+        components.add(claw);
     }
 
     public void start()

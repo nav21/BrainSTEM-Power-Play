@@ -154,24 +154,6 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             sd.update(Math.toDegrees(robot.drive.getRawExternalHeading()));
             robot.drive.setMotorPowers(sd.l_f_motor_power, sd.l_b_motor_power, sd.r_b_motor_power, sd.r_f_motor_power);
 
-
-//            if(moveLiftUp) {
-//                robot.lift.setGoal(Lift.Goal.UP);
-//                telemetry.addLine("Running Motor: Front Left");
-//            } else if(moveLiftDown) {
-//                robot.lift.setGoal(Lift.Goal.DOWN);
-//                telemetry.addLine("Running Motor: Rear Left");
-//            }
-            if(moveLiftUpTrigger > THRESHOLD) {
-                robot.lift.setMotorPowers(moveLiftUpTrigger, moveLiftUpTrigger, moveLiftUpTrigger, moveLiftUpTrigger);
-                telemetry.addLine("Running Motaaor: Front Left");
-            } else if(moveLiftDownTrigger > THRESHOLD) {
-                robot.lift.setMotorPowers(-moveLiftDownTrigger, -moveLiftDownTrigger, -moveLiftDownTrigger, -moveLiftDownTrigger);
-                telemetry.addLine("Running a: Rear Left");
-            }
-            else {
-                robot.lift.setMotorPowers(0, 0, 0, 0);
-            }
             if(moveLiftUp) {
                 robot.lift.setGoal(Lift.Goal.UP);
                 telemetry.addLine("Running Motaaor: Front Left");
@@ -246,7 +228,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             } else {
                 robot.lift.setMode(Lift.Mode.HIGH);
             }
-            robot.claw.update();
+            //robot.claw.update();
 
             robot.lift.update();
 
@@ -254,7 +236,10 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             MOTOR_TICK_COUNT = robot.lift.getLiftEncoderTicks();
             telemetry.addData("Modething", mode);
             telemetry.addData("Deposit Mode", MOTOR_TICK_COUNT);
-           // telemetry.addData("Lift Limit Switch", robot.depositor.getLimitSwtichState());
+            telemetry.addData("Lift pwr: ", robot.lift.pwr);
+            telemetry.addData("Lift PIDCount: ", robot.lift.PIDCount);
+            telemetry.addData("Lift PIDSkipCount: ", robot.lift.PIDSkipCount);
+            // telemetry.addData("Lift Limit Switch", robot.depositor.getLimitSwtichState());
 
             telemetry.update();
         }

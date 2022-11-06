@@ -71,10 +71,10 @@ public class LiftTest extends LinearOpMode {
             telemetry.addLine();
 
             if(gamepad1.right_trigger > THRESHOLD) {
-                lift.setMotorPowers(gamepad1.right_trigger, -gamepad1.right_trigger, -gamepad1.right_trigger, gamepad1.right_trigger);
+                lift.setMotorPowers(gamepad1.right_trigger, gamepad1.right_trigger, gamepad1.right_trigger, gamepad1.right_trigger);
                 telemetry.addLine("Running Motor: Front Left");
             } else if(gamepad1.left_trigger > THRESHOLD) {
-                lift.setMotorPowers(-gamepad1.left_trigger, gamepad1.left_trigger, gamepad1.left_trigger, -gamepad1.left_trigger);
+                lift.setMotorPowers(-gamepad1.left_trigger, -gamepad1.left_trigger, -gamepad1.left_trigger, -gamepad1.left_trigger);
                 telemetry.addLine("Running Motor: Rear Left");
             } else {
                 lift.setMotorPowers(0, 0, 0, 0);

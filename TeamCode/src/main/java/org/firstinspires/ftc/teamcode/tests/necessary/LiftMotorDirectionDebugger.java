@@ -64,23 +64,23 @@ public class LiftMotorDirectionDebugger extends LinearOpMode {
             telemetry.addLine("Press each button to turn on its respective motor");
             telemetry.addLine();
             telemetry.addLine("<font face=\"monospace\">Xbox/PS4 Button - Motor</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;X / ▢&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Left</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;Y / Δ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Front Right</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;B / O&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Right</font>");
-            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Rear&nbsp;&nbsp;Left</font>");
+            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;X / ▢&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- fl</font>");
+            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;Y / Δ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- fr</font>");
+            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;B / O&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- br</font>");
+            telemetry.addLine("<font face=\"monospace\">&nbsp;&nbsp;A / X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- bl</font>");
             telemetry.addLine();
 
             if(gamepad1.x) {
                 lift.setMotorPowers(MOTOR_POWER, 0.0, 0.0, 0.0);
                 telemetry.addLine("Running Motor: Front Left");
             } else if(gamepad1.y) {
-                lift.setMotorPowers(0, 0, 0, MOTOR_POWER);
+                lift.setMotorPowers(0, MOTOR_POWER, 0, 0);
                 telemetry.addLine("Running Motor: Front Right");
             } else if(gamepad1.b) {
-                lift.setMotorPowers(0, 0, MOTOR_POWER, 0);
+                lift.setMotorPowers(0, 0,0 , MOTOR_POWER);
                 telemetry.addLine("Running Motor: Rear Right");
             } else if(gamepad1.a) {
-                lift.setMotorPowers(0, MOTOR_POWER, 0, 0);
+                lift.setMotorPowers(0, 0, MOTOR_POWER, 0);
                 telemetry.addLine("Running Motor: Rear Left");
             } else {
                 lift.setMotorPowers(0, 0, 0, 0);

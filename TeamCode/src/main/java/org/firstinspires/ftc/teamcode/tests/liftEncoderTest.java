@@ -29,8 +29,8 @@ public class liftEncoderTest extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            // PORTME
-            // MOTOR_TICK_COUNT = robot.lift.getLiftEncoderTicks();
+
+             MOTOR_TICK_COUNT = robot.lift.getLiftEncoderTicks();
             telemetry.addData("Deposit Mode", MOTOR_TICK_COUNT);
             telemetry.update();
         }

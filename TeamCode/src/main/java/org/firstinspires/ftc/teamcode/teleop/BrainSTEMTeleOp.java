@@ -208,8 +208,8 @@ public class BrainSTEMTeleOp extends LinearOpMode {
                     break;
             }
 
-            robot.claw.update();
-            robot.lift.update();
+            robot.claw.updateComponent();
+            robot.lift.updateComponent();
 
             telemetry.addData("Lift Mode", robot.lift.getMode());
             telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());

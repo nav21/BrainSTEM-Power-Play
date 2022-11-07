@@ -86,10 +86,11 @@ public class AutoBrainSTEMRobot implements Runnable
         while (started)
         {
             for (Component component : components)
-                if (!opMode.isStopRequested())
-                    component.update();
-                else
+                if (!opMode.isStopRequested()) {
+                    component.updateComponent();
+                }  else {
                     stop();
+                }
         }
     }
 
@@ -101,10 +102,10 @@ public class AutoBrainSTEMRobot implements Runnable
     /**
      * Initialize robot for autonomous.
      */
-    public void initBlockAuto()
+    public void initAuto()
     {
         for (Component component : components)
-            component.initBlockAuto();
+            component.initAuto();
     }
 
     public String test()

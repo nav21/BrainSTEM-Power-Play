@@ -51,7 +51,7 @@ public class RedAuto extends BaseAuto {
 
         Pose2d startPose = new Pose2d(-36, -64.38, Math.toRadians(-90));
         robot.drive.setPoseEstimate(startPose);
-        Trajectory traj = robot.drive.trajectoryBuilder(startPose)
+        Trajectory traj = robot.drive.trajectoryBuilder(startPose,true)
                 .lineToSplineHeading(new Pose2d(-36, -30, Math.toRadians(-181)))
                 .build();
         Trajectory traj2 = robot.drive.trajectoryBuilder(traj.end())
@@ -65,11 +65,9 @@ public class RedAuto extends BaseAuto {
                 .build();
         robot.drive.followTrajectory(traj);
         sleep(2000);
-       // robot.drive.followTrajectory(traj2);
+        // robot.drive.followTrajectory(traj2);
         robot.drive.followTrajectory(traj3);
         sleep(200);
         robot.drive.followTrajectory(traj4);
-
-
     }
 }

@@ -103,7 +103,7 @@ public class ServoArmTest extends LinearOpMode {
                 telemetry.addData("Status", "Release");
             }
 
-            robot.claw.update();
+            robot.claw.updateComponent();
             telemetry.addData("Left", robot.claw.getLeftClawPosition());
             telemetry.addData("Right", robot.claw.getRightClawPosition());
             telemetry.update();

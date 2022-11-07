@@ -113,16 +113,12 @@ public class Lift implements Component {
     public void initAuto() {
     }
 
-    public void initBlockAuto() {
-
-    }
-
     @Override
     public void initTeleOp() {
     }
 
     @Override
-    public void update() {
+    public void updateComponent() {
         double now = DownClock.seconds();
         double curPos = getLiftEncoderTicks();
 

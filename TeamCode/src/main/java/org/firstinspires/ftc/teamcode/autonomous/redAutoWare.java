@@ -25,7 +25,7 @@ public class redAutoWare extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         AutoBrainSTEMRobot robot = new AutoBrainSTEMRobot(this);
 
-        robot.initBlockAuto();
+        robot.initAuto();
         /*
         Pose2d startPose = new Pose2d(-12, -63.5, Math.toRadians(-62));
 

@@ -59,7 +59,7 @@ import java.util.List;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class BMecanumDrive extends MecanumDrive implements Component{
+public class BMecanumDrive extends MecanumDrive implements Component {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1.5, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
 
@@ -113,7 +113,9 @@ public class BMecanumDrive extends MecanumDrive implements Component{
         BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
     }
 
-    public BMecanumDrive(HardwareMap hardwareMap) { this(hardwareMap, 0.5); }
+    public BMecanumDrive(HardwareMap hardwareMap) {
+        this(hardwareMap, 0.5);
+    }
 
     public BMecanumDrive(HardwareMap hardwareMap, double timeout) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -167,16 +169,18 @@ public class BMecanumDrive extends MecanumDrive implements Component{
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
 
-    public void initAuto () {
+    @Override
+    public void initAuto() {
 
     }
 
+    @Override
     public void initTeleOp() {
 
     }
 
-    public void initBlockAuto() {
-
+    @Override
+    public void updateComponent() {
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {

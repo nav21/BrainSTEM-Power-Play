@@ -6,9 +6,7 @@ public interface Component
 
 	void initTeleOp();
 
-	void update();
-
-	void initBlockAuto();
+	void updateComponent();
 
 	String test();
 }

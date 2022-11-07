@@ -25,7 +25,7 @@ public class RedPark extends LinearOpMode {
         AutoBrainSTEMRobot robot = new AutoBrainSTEMRobot(this);
 
 
-        robot.initBlockAuto();
+        robot.initAuto();
         robot.start();
         /*
         Pose2d startPose = new Pose2d(-12, -63.5, Math.toRadians(-90));

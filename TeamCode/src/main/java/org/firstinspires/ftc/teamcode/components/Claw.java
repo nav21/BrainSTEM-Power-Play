@@ -55,9 +55,11 @@ public class Claw implements Component {
     }
 
     @Override
-    public void initBlockAuto() {
-        setClawServoPosition(ClawPosition.OPEN);
+    public void initAuto() {
     }
+
+    /*
+    @Override
     public void initAuto()
     {
         NanoClock clock = NanoClock.system();
@@ -69,6 +71,7 @@ public class Claw implements Component {
         while (clock.seconds() < (now + 0.5 ) ) { }
         setClawServoPosition(ClawPosition.CLOSED);
     }
+    */
 
     @Override
     public void initTeleOp() {
@@ -78,7 +81,7 @@ public class Claw implements Component {
     }
 
     @Override
-    public void update() {
+    public void updateComponent() {
         // Alternate with TimedServo
         //timedRightFlipServo.update();
         timedLeftFlipServo.update();

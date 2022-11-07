@@ -140,9 +140,9 @@ public class SmoothDrive {
                 forward[padIdx] = fod[padIdx].getNewY();
             }
  
-            // A little bump to make strafe/rotate feel more responsive
+            // Adjustments to make strafe/rotate feel more responsive/controllable
             strafe[padIdx] *= 1.25;
-            rotate[padIdx] *= 1.5;
+            rotate[padIdx] *= 0.75;
 
             if(smoothDrive) {
                 now = runtime.seconds();

@@ -40,19 +40,22 @@ public class ServoArmTest extends LinearOpMode {
         Right Bumper: Toggle collector on/off
         Right Trigger: Move lift up
      */
-    private boolean collectorFlipServoOut;
-    private boolean collectorFlipServoIn;
-    private boolean collectorClawServoOut;
-    private boolean collectorClawServoIn;
+    private boolean collectorFlipServoDeposit;
+    private boolean collectorFlipServoCollect;
+    private boolean collectorFlipServoMid;
+    private boolean collectorClawServoOpen;
+    private boolean collectorClawServoClosed;
+    private boolean collectorClawServoRelease;
     private static double position = 0.2;
 
 
     private void mapControls() {
-        collectorClawServoIn = gamepad1.y;
-        collectorClawServoOut = gamepad1.x;
-        collectorFlipServoIn = gamepad1.a;
-        collectorFlipServoOut = gamepad1.b;
-
+        collectorClawServoOpen = gamepad1.y;
+        collectorClawServoClosed = gamepad1.x;
+        collectorClawServoRelease = gamepad1.left_bumper;
+        collectorFlipServoCollect = gamepad1.a;
+        collectorFlipServoDeposit = gamepad1.b;
+        collectorFlipServoMid = gamepad1.right_bumper;
     }
 
     @Override
@@ -72,28 +75,38 @@ public class ServoArmTest extends LinearOpMode {
         while (opModeIsActive()) {
             mapControls();
 
-            if (collectorFlipServoOut && (prevState != FlipPosition.DEPOSIT)){
-//                robot.claw.setFlipServoPosition(FlipPosition.DEPOSIT);
-//                prevState = FlipPosition.DEPOSIT ;
-//                telemetry.addData("Status", "jssgsbsgbg");
-//                telemetry.update();
+            if (collectorFlipServoDeposit && (prevState != FlipPosition.DEPOSIT)){
+                robot.claw.setFlipServoPosition(FlipPosition.DEPOSIT);
+                prevState = FlipPosition.DEPOSIT ;
+                telemetry.addData("Status", "Deposit");
             }
-            if (collectorFlipServoIn && (prevState != FlipPosition.COLLECT)){
+            if (collectorFlipServoCollect && (prevState != FlipPosition.COLLECT)){
                 robot.claw.setFlipServoPosition(FlipPosition.COLLECT);
                 prevState = FlipPosition.COLLECT ;
-                telemetry.addData("Status", "jjjjjjjjjjj");
-                telemetry.update();
+                telemetry.addData("Status", "Collect");
             }
-            if (collectorClawServoIn){
+            if (collectorFlipServoMid && (prevState != FlipPosition.MID)){
+                robot.claw.setFlipServoPosition(FlipPosition.MID);
+                prevState = FlipPosition.MID ;
+                telemetry.addData("Status", "Mid");
+            }
+            if (collectorClawServoOpen){
                 robot.claw.setClawServoPosition(ClawPosition.OPEN);
-                telemetry.addData("Status", "jssgsbsgbg");
-                telemetry.update();
+                telemetry.addData("Status", "Open");
             }
-            if (collectorClawServoOut){
+            if (collectorClawServoClosed){
                 robot.claw.setClawServoPosition(ClawPosition.CLOSED);
-                telemetry.addData("Status", "jjjjjjjjjjj");
-                telemetry.update();
+                telemetry.addData("Status", "Closed");
             }
+            if (collectorClawServoRelease){
+                robot.claw.setClawServoPosition(ClawPosition.RELEASE);
+                telemetry.addData("Status", "Release");
+            }
+
+            robot.claw.update();
+            telemetry.addData("Left", robot.claw.getLeftClawPosition());
+            telemetry.addData("Right", robot.claw.getRightClawPosition());
+            telemetry.update();
 //            robot.collector.disableFlipServos();
 //
 //            //If the x value of the left stick, the y value of the left stick, or the x value of

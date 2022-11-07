@@ -55,18 +55,16 @@ public class Lift implements Component {
     }
 
     public enum Mode {
-        LOW, HIGH, MED, JUNC
+        LOW, HIGH, MED, JUNC, INIT
     }
 
-    // PORTME Use REV PID
     //private static final double HOLD_LIFT_POWER = 0.15;
     private int currentPosition;
-    // PORTME
-    private static final int restPosition = 200; //FILL THIS IN; //TODO SET THESE VALUES
-    private static final int junctionPosition = 3000; //FILL THIS IN;
-    private static final int lowPosition = 10000;//FILL THIS IN;
-    private static final int medPosition = 22000;//FILL THIS IN;
-    private static final int highPosition = 34000;//FILL THIS IN;
+    private static final int restPosition = 200;
+    private static final int junctionPosition = 2000;
+    private static final int lowPosition = 16000;
+    private static final int medPosition = 28000;
+    private static final int highPosition = 38000;
 
     private final DcMotor fl;
     private final DcMotor fr;
@@ -106,7 +104,7 @@ public class Lift implements Component {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         pid.reset();                                       // Out PID keeps state, clear it all out
-        pid.setOutputLimits(0.0,MAX_LIFT_UP_PWR);             // Make sure we don't exceed some maximum rating
+        pid.setOutputLimits(0.0,MAX_LIFT_UP_PWR);          // Make sure we don't exceed some maximum rating
         vF = F;
         pid.setPID(P,I,D,vF);                              // Set out params
     }

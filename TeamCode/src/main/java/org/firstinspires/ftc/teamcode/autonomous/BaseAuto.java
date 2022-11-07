@@ -86,15 +86,18 @@ public abstract class BaseAuto extends LinearOpMode {
         visionLibrary.init();
 
         SignalSleevePosition signalSleevePosition = SignalSleevePosition.UNKNOWN;
-
+        SignalSleevePosition signalSleevePositionTemp = SignalSleevePosition.UNKNOWN;
 
         while (!opModeIsActive() && !isStopRequested()) {
-
-           signalSleevePosition = visionLibrary.getSignalSleevePosition();
+            // Never forget the last valid thing we saw.
+            signalSleevePositionTemp = visionLibrary.getSignalSleevePosition();
+            if (signalSleevePositionTemp != SignalSleevePosition.UNKNOWN) {
+                signalSleevePosition =  signalSleevePositionTemp;
+            }
 
             telemetry.addData("Status", "Waiting...");
-         telemetry.addData("Signal Pos", signalSleevePosition);
-          telemetry.update();
+            telemetry.addData("Signal Pos", signalSleevePosition);
+            telemetry.update();
         }
 
         visionLibrary.stopVision();

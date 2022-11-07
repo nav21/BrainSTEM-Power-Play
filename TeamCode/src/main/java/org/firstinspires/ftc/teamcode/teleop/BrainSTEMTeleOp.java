@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.autonomous.cancellers.TimerCanceller;
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
@@ -33,10 +36,13 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
     private StickyButton depositorStickyButton = new StickyButton();
 */
-    private StickyButton modeStickyButton = new StickyButton();
+    private StickyButton heightIncStickyButton = new StickyButton();
+    private StickyButton heightDecStickyButton = new StickyButton();
 
-    private StickyButton depositorStickyButton = new StickyButton();
-    private ToggleButton depositorToggleButton = new ToggleButton();
+
+    private StickyButton depositorIncStickyButton = new StickyButton();
+    private StickyButton depositorDecStickyButton = new StickyButton();
+    //private ToggleButton depositorToggleButton = new ToggleButton();
     ////////////
     //DRIVER 1//
     ////////////
@@ -93,45 +99,44 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     private boolean resetDepositorToggle;
     private int depositorToggleHits = 0;
 
-    private boolean modeToggle;
-    private boolean modeToggleHits;
+    //private boolean modeToggle;
+    private int heightToggleHits=3;
     private int mode = 0;
 
 
-    private void mapControls() {
-        // drive = Math.pow(Math.abs(gamepad1.left_stick_y), driveInterpolationFactor) * Math.signum(-gamepad1.left_stick_y)/2.25;
-        // turn = (Math.pow(Math.abs(gamepad1.right_stick_x), driveInterpolationFactor) * Math.signum(-gamepad1.right_stick_x))/3.5;
 
+    private void mapControls(BrainSTEMRobot robot) {
+        if( robot.claw.isSafeToChangeClawGoal()) {
+            depositorIncStickyButton.update(gamepad1.a);
+            depositorToggleHits += depositorIncStickyButton.getState() ? 1 : 0;
 
-        resetDepositorToggle = gamepad1.right_stick_button;
-        depositorStickyButton.update(gamepad1.left_stick_button);
-        depositorToggleHits += depositorStickyButton.getState() ? 1 : 0;
+            depositorDecStickyButton.update(gamepad1.b);
+            if (depositorDecStickyButton.getState()) {
+                if (depositorToggleHits == 1) {
+                    depositorToggleHits = 5;
+                } else {
+                    depositorToggleHits = Math.max(0, depositorToggleHits - 1);
+                }
+            }
+        }
 
-       depositor = depositorToggleButton.update(gamepad1.a);
+        if( robot.claw.isSafeToChangeClawGoal() && ((robot.claw.getCurrentGoal() == Claw.Goal.RETURN_MID) || (robot.claw.getCurrentGoal() == Claw.Goal.COLLECT_MID))) {
+            moveLiftUp = gamepad1.right_bumper;
+            moveLiftDown = gamepad1.left_bumper;
 
-//        carouselReverse = gamepad1.dpad_up;
-//
-//        collectorGateOut = gamepad1.y;
-//        collectorGate = gamepad1.b;
+            heightIncStickyButton.update(gamepad1.y);
+            heightToggleHits += heightIncStickyButton.getState() ? 1 : 0;
 
-        moveLiftUp = gamepad1.right_bumper;
-        moveLiftDown = gamepad1.left_bumper;
-        moveLiftUpTrigger = gamepad1.right_trigger;
-        moveLiftDownTrigger = gamepad1.left_trigger;
-
-       // resetDepositorToggle = gamepad1.right_stick_button;
-//        depositorStickyButton.update(gamepad1.left_stick_button);
-//        depositorToggleHits += depositorStickyButton.getState() ? 1 : 0;
-//
-
-       modeStickyButton.update(gamepad1.x);
-      // modeButton =modeStickyButton.getState();
-       modeToggleHits = modeStickyButton.getState();
-
+            heightDecStickyButton.update(gamepad1.x);
+            heightToggleHits -= heightDecStickyButton.getState() ? 1 : 0;
+            Range.clip(heightToggleHits, 0, 3);
+        }
     }
 
     @Override
     public void runOpMode() {
+        PhotonCore.enable();
+
         // Initialize a new robot object
         BrainSTEMRobot robot = new BrainSTEMRobot(this);
 
@@ -148,7 +153,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
         runtime.reset();
         while (opModeIsActive()) {
-            mapControls();
+            mapControls(robot);
 
             // This is a 'better' way to do the smooth drive where we push everything into a class
             sd.update(Math.toDegrees(robot.drive.getRawExternalHeading()));
@@ -162,85 +167,57 @@ public class BrainSTEMTeleOp extends LinearOpMode {
                 telemetry.addLine("Running a: Rear Left");
             }
 
-            /*
-            //If the x value of the left stick, the y value of the left stick, or the x value of
-            //the right stick is greater than the THRESHOLD value, move the robot
-            if ((Math.abs(turn) > THRESHOLD) || Math.abs(drive) > THRESHOLD) {
-                robot.drive.setMotorPowers(drive- turn, drive+turn);
-            } else {
-                robot.drive.setMotorPowers(0, 0);
-            }
-            */
+            //if (resetDepositorToggle) {
+            //    robot.claw.setCurrentGoal(Claw.Goal.RETURN);
+            //    depositorToggleHits = 0;
+            //}
 
-            /*
-            if (collectorOn) {
-                robot.collector.setCurrentGoal(Collector.Goal.COLLECT);
-            }
-
-            if (carouselReverse) {
-                robot.collector.setCollectorPower(-0.46);
-            } else if (toggleCarouselOn) {
-                robot.collector.setCollectorPower(0.46);
-            } else if (collectorTransfer) {
-                robot.collector.setCollectorPower(1);
-            } else if (robot.collector.getCurrentGoal() == Collector.Goal.OPEN_LOOP) {
-                robot.collector.setCollectorPower(0);
-            }
-
-            if (moveLiftUp > THRESHOLD) {
-                robot.depositor.setLiftPower(moveLiftUp);
-            } else if (moveLiftDown > THRESHOLD) {
-                robot.depositor.setLiftPower(-moveLiftDown);
-            } else {
-                robot.depositor.holdOrStopLift();
+            switch (depositorToggleHits % 6) {
+                case 1:
+                    robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
+                    break;
+                case 2:
+                    robot.claw.setCurrentGoal(Claw.Goal.FLIP);
+                    break;
+                case 3:
+                    robot.claw.setCurrentGoal(Claw.Goal.RELEASE);
+                    break;
+                case 4:
+                    robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID);
+                    break;
+                case 5:
+                    robot.claw.setCurrentGoal(Claw.Goal.RESET);
+                    depositorToggleHits = 0;
+                    break;
+                default:
+                    break;
             }
 
-
-
-            if (collectorGate) {
-                robot.collector.setGateServoPosition(CollectorPosition.IN);
-            }
-            if (collectorGateOut) {
-                robot.collector.setGateServoPosition(CollectorPosition.OUT);
-            }
-  */
-
-//            if (resetDepositorToggle) {
-//                robot.claw.setCurrentGoal(Claw.Goal.COLLECT);
-//                depositorToggleHits = 0;
-//            } TODO: UNCOMMENT THIS CLAW CODE LATER
-//            if (depositor) {
-//                robot.claw.setCurrentGoal(Claw.Goal.COLLECT);
-//            } else {
-//                robot.claw.setCurrentGoal(Claw.Goal.DEPOSIT);
-//            }
-
-            if (modeToggleHits) {
-                mode += 1;
+            switch (heightToggleHits % 4) {
+                case 0:
+                    robot.lift.setMode(Lift.Mode.JUNC);
+                    break;
+                case 1:
+                    robot.lift.setMode(Lift.Mode.LOW);
+                    break;
+                case 2:
+                    robot.lift.setMode(Lift.Mode.MED);
+                    break;
+                case 3:
+                    robot.lift.setMode(Lift.Mode.HIGH);
+                    break;
             }
 
-            if (mode % 4 == 1) {
-                robot.lift.setMode(Lift.Mode.MED);
-            } else if (mode % 4 == 2) {
-                robot.lift.setMode(Lift.Mode.LOW);
-            } else if (mode % 4 == 3) {
-                robot.lift.setMode(Lift.Mode.JUNC);
-            } else {
-                robot.lift.setMode(Lift.Mode.HIGH);
-            }
-            //robot.claw.update();
-
+            robot.claw.update();
             robot.lift.update();
 
             telemetry.addData("Lift Mode", robot.lift.getMode());
+            telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
             MOTOR_TICK_COUNT = robot.lift.getLiftEncoderTicks();
-            telemetry.addData("Modething", mode);
-            telemetry.addData("Deposit Mode", MOTOR_TICK_COUNT);
+            telemetry.addData("Mode:", mode);
+            telemetry.addData("depositorToggleHits: ", depositorToggleHits);
+            telemetry.addData("Lift Height: ", MOTOR_TICK_COUNT);
             telemetry.addData("Lift pwr: ", robot.lift.pwr);
-            telemetry.addData("Lift PIDCount: ", robot.lift.PIDCount);
-            telemetry.addData("Lift PIDSkipCount: ", robot.lift.PIDSkipCount);
-            // telemetry.addData("Lift Limit Switch", robot.depositor.getLimitSwtichState());
-
             telemetry.update();
         }
     }

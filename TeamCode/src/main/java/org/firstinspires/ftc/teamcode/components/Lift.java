@@ -55,7 +55,7 @@ public class Lift implements Component {
     }
 
     public enum Mode {
-        LOW, HIGH, MED, JUNC, INIT
+        LOW, HIGH, MED, JUNC, INIT, CONE_5, CONE_4, CONE_3, CONE_2,
     }
 
     //private static final double HOLD_LIFT_POWER = 0.15;
@@ -65,6 +65,12 @@ public class Lift implements Component {
     private static final int lowPosition = 16000;
     private static final int medPosition = 28000;
     private static final int highPosition = 38000;
+    private static final int cone5 = 2000;
+    private static final int cone4 = 2000;
+    private static final int cone3 = 2000;
+    private static final int cone2 = 2000;
+
+
 
     private final DcMotor fl;
     private final DcMotor fr;
@@ -137,6 +143,14 @@ public class Lift implements Component {
                     runLiftToPosition(LiftPosition.LOW);
                 } else if (mode.equals(Mode.JUNC)) {
                     runLiftToPosition(LiftPosition.JUNC);
+                }else if (mode.equals(Mode.CONE_5)) {
+                    runLiftToPosition(LiftPosition.CONE_5);
+                }else if (mode.equals(Mode.CONE_4)) {
+                    runLiftToPosition(LiftPosition.CONE_4);
+                }else if (mode.equals(Mode.CONE_3)) {
+                    runLiftToPosition(LiftPosition.CONE_3);
+                }else if (mode.equals(Mode.CONE_2)) {
+                    runLiftToPosition(LiftPosition.CONE_2);
                 }
                 break;
             case DOWN:
@@ -144,9 +158,6 @@ public class Lift implements Component {
                     if (nextDown < now) {
                         setLiftPos(Math.max(restPosition, curPos - 1000.0));
                         nextDown = now + 0.03;
-                        if (curPos < 10000) {
-                            pid.setOutputLimits(-0.40, 0.4);
-                        }
                     }
                 } else {
                     pid.setOutputLimits(-0.25, 0.4);             // Make sure we don't exceed some maximum rating
@@ -208,6 +219,18 @@ public class Lift implements Component {
                 setLiftPos(medPosition);
                 break;
             case HIGH:
+                setLiftPos(highPosition);
+                break;
+            case CONE_4:
+                setLiftPos(highPosition);
+                break;
+            case CONE_5:
+                setLiftPos(highPosition);
+                break;
+            case CONE_3:
+                setLiftPos(highPosition);
+                break;
+            case CONE_2:
                 setLiftPos(highPosition);
                 break;
         }

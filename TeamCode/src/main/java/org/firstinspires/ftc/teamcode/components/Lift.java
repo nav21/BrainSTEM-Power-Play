@@ -158,6 +158,9 @@ public class Lift implements Component {
                     if (nextDown < now) {
                         setLiftPos(Math.max(restPosition, curPos - 1000.0));
                         nextDown = now + 0.03;
+                        if (curPos < 10000) {
+                            pid.setOutputLimits(-0.40, 0.4);
+                        }
                     }
                 } else {
                     pid.setOutputLimits(-0.25, 0.4);             // Make sure we don't exceed some maximum rating

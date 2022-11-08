@@ -37,28 +37,20 @@ public class Claw implements Component {
     private Goal currentGoal;
 
     private TimerCanceller flipUpCanceller = new TimerCanceller(500);
-    //private TimerCanceller releaseCanceller = new TimerCanceller(1000);
-    //private TimerCanceller flipBackCanceller = new TimerCanceller(2000);
     private TimerCanceller clawOpenCanceller = new TimerCanceller(250);
     private TimerCanceller depositorStateCanceller = new TimerCanceller(2000);
+    private TimerCanceller returnMidFlipCanceller = new TimerCanceller(250);
 
     public Claw(HardwareMap map) {
         clawServoRight = map.get(ServoImplEx.class,"clawServoRight");
         clawServoLeft = map.get(ServoImplEx.class,"clawServoLeft");
         leftFlipServo = map.get(ServoImplEx.class,"leftFlipServo");
         //rightFlipServo = map.get(ServoImplEx.class,"RightFlipServo");
-        // Alternate timed servo code
         timedLeftFlipServo = new TimedServo(leftFlipServo);
         // timedRightFlipServo = new TimedServo(rightFlipServo);
 
         currentGoal = Goal.OPEN_LOOP;
     }
-
-//    @Override
-//    public void initAuto() {
-//
-//    }
-
 
     @Override
     public void initAuto()
@@ -73,7 +65,6 @@ public class Claw implements Component {
 //        setClawServoPosition(ClawPosition.CLOSED);
     }
 
-
     @Override
     public void initTeleOp() {
         setClawServoPosition(ClawPosition.OPEN);
@@ -83,7 +74,6 @@ public class Claw implements Component {
 
     @Override
     public void updateComponent() {
-        // Alternate with TimedServo
         //timedRightFlipServo.update();
         timedLeftFlipServo.update();
         switch (currentGoal) {
@@ -99,10 +89,13 @@ public class Claw implements Component {
                 setFlipServoPosition(FlipPosition.DEPOSIT);
                 break;
             case RELEASE:
-                setClawServoPosition(ClawPosition.RELEASE);
+                setClawServoPosition(ClawPosition.OPEN);
                 break;
             case RETURN_MID:
-                setFlipServoPosition(FlipPosition.MID);
+                if (returnMidFlipCanceller.isConditionMet()) {
+                    setFlipServoPosition(FlipPosition.MID);
+                }
+                setClawServoPosition(ClawPosition.CLOSED);
                 break;
             case RESET:
                 if (clawOpenCanceller.isConditionMet()) {
@@ -129,6 +122,7 @@ public class Claw implements Component {
 
             flipUpCanceller.reset();
             clawOpenCanceller.reset();
+            returnMidFlipCanceller.reset();
             switch (currentGoal) {
                 case OPEN_LOOP:
                     depositorStateCanceller.reset(1);
@@ -137,13 +131,13 @@ public class Claw implements Component {
                     depositorStateCanceller.reset(1000);
                     break;
                 case FLIP:
-                    depositorStateCanceller.reset(600);
+                    depositorStateCanceller.reset(400);
                     break;
                 case RELEASE:
                     depositorStateCanceller.reset(250);
                     break;
                 case RETURN_MID:
-                    depositorStateCanceller.reset(600);
+                    depositorStateCanceller.reset(750);
                     break;
                 case RESET:
                     depositorStateCanceller.reset(600);

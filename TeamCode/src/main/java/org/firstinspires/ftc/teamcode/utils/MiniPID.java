@@ -223,6 +223,13 @@ public class MiniPID{
         }
     }
 
+    public double getOutputMax(){
+        return(maxOutput);
+    }
+    public double getOutputMin(){
+        return(minOutput);
+    }
+
     /**
      * Set the operating direction of the PID controller
      * @param reversed Set true to reverse PID output

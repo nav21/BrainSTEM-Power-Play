@@ -26,23 +26,11 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     // private double driveInterpolationFactor = 2;
     private static final double THRESHOLD = 0.001;
 
-    /*
-    private ToggleButton collectorToggle = new ToggleButton();
-    private ToggleButton carouselToggle = new ToggleButton();
-    private ToggleButton liftToggle = new ToggleButton();
-    private ToggleButton depositorGateToggle = new ToggleButton();
-    private ToggleButton extensionLiftToggle = new ToggleButton();
-    private ToggleButton collectorGateToggle = new ToggleButton();
-
-    private StickyButton depositorStickyButton = new StickyButton();
-*/
     private StickyButton heightIncStickyButton = new StickyButton();
     private StickyButton heightDecStickyButton = new StickyButton();
 
-
-    private StickyButton depositorIncStickyButton = new StickyButton();
-    private StickyButton depositorDecStickyButton = new StickyButton();
-    //private ToggleButton depositorToggleButton = new ToggleButton();
+    private StickyButton clawIncStickyButton = new StickyButton();
+    private StickyButton clawDecStickyButton = new StickyButton();
     ////////////
     //DRIVER 1//
     ////////////
@@ -50,56 +38,34 @@ public class BrainSTEMTeleOp extends LinearOpMode {
         NEW DRIVER 1 CONTROLS
         Left Stick X:
         Left Stick Y: Drive left side
-        Left Stick Button: Press left button once to enable collector flip servos and move it to exactly horizontal, press again to disable flip servos
+        Left Stick Button:
         Right Stick X:
         Right Stick Y: Drive right side
         Right Stick Button:
         D-pad Up:
         D-pad Left:
-        D-pad Down: Carousel left wheel move , click again to spin other way
+        D-pad Down:
         D-pad Right:
         Start:
-        X: Press X once to close the gate servo, extend the depositor out, and deposit the element.
-        Press X again to close the deposit servo, retract depositor, and open gate servo.
-        B: Press B once to close the depositor gate servo, and press B once more to open it
+        X:
+        B:
         Y:
-        A: Press A once to put collector gate servo in and click A again to put it out.
-        Left Bumper: Reverse collector when holding
-        Left Trigger: Move lift down
-        Right Bumper: Toggle collector on/off
-        Right Trigger: Move lift up
+        A:
+        Left Bumper:
+        Left Trigger:
+        Right Bumper:
+        Right Trigger:
      */
     // private double drive;
     // private double turn;
 
-
     private ElapsedTime runtime = new ElapsedTime();
-
-    private boolean collectorOn;
-    private boolean collectorTransfer;
-    private double MOTOR_TICK_COUNT;
-
-
-    private boolean carouselReverse;
-    private boolean toggleCarouselOn;
-
-    private boolean modeButton;
-    private boolean collectorGateOut;
 
     private boolean moveLiftUp;
     private boolean moveLiftDown;
 
-    private double moveLiftUpTrigger;
-    private double moveLiftDownTrigger;
+    private int clawToggleHits = 0;
 
-    private boolean collectorGate;
-    private boolean depositor;
-
-    private boolean modeThing;
-    private boolean resetDepositorToggle;
-    private int depositorToggleHits = 0;
-
-    //private boolean modeToggle;
     private int heightToggleHits=3;
     private int mode = 0;
 
@@ -107,15 +73,15 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
     private void mapControls(BrainSTEMRobot robot) {
         if( robot.claw.isSafeToChangeClawGoal()) {
-            depositorIncStickyButton.update(gamepad1.a);
-            depositorToggleHits += depositorIncStickyButton.getState() ? 1 : 0;
+            clawIncStickyButton.update(gamepad1.a);
+            clawToggleHits += clawIncStickyButton.getState() ? 1 : 0;
 
-            depositorDecStickyButton.update(gamepad1.b);
-            if (depositorDecStickyButton.getState()) {
-                if (depositorToggleHits == 1) {
-                    depositorToggleHits = 5;
+            clawDecStickyButton.update(gamepad1.b);
+            if (clawDecStickyButton.getState()) {
+                if (clawToggleHits == 1) {
+                    clawToggleHits = 5;
                 } else {
-                    depositorToggleHits = Math.max(0, depositorToggleHits - 1);
+                    clawToggleHits = Math.max(0, clawToggleHits - 1);
                 }
             }
         }
@@ -167,12 +133,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
                 telemetry.addLine("Running a: Rear Left");
             }
 
-            //if (resetDepositorToggle) {
-            //    robot.claw.setCurrentGoal(Claw.Goal.RETURN);
-            //    depositorToggleHits = 0;
-            //}
-
-            switch (depositorToggleHits % 6) {
+            switch (clawToggleHits % 6) {
                 case 1:
                     robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
                     break;
@@ -187,7 +148,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
                     break;
                 case 5:
                     robot.claw.setCurrentGoal(Claw.Goal.RESET);
-                    depositorToggleHits = 0;
+                    clawToggleHits = 0;
                     break;
                 default:
                     break;
@@ -211,13 +172,15 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             robot.claw.updateComponent();
             robot.lift.updateComponent();
 
-            telemetry.addData("Lift Mode", robot.lift.getMode());
-            telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
-            MOTOR_TICK_COUNT = robot.lift.getLiftEncoderTicks();
             telemetry.addData("Mode:", mode);
-            telemetry.addData("depositorToggleHits: ", depositorToggleHits);
-            telemetry.addData("Lift Height: ", MOTOR_TICK_COUNT);
+            telemetry.addData("clawToggleHits: ", clawToggleHits);
+            telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
+            telemetry.addData("Lift Mode", robot.lift.getMode());
+            telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
+            telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
             telemetry.addData("Lift pwr: ", robot.lift.pwr);
+            telemetry.addData("Min pwr: ", robot.lift.pid.getOutputMin());
+            telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
             telemetry.update();
         }
     }

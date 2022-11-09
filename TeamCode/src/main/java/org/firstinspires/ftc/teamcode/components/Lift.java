@@ -23,17 +23,21 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Lift implements Component {
 
-    private double U = 5.0 / 500.0;
+    private double U = 1.0 / 500.0;
     private double Period = 4.5;
-    private double P = U * 0.45;               // proportional scaling
+    private double P = U * 0.45 ;               // proportional scaling
     private double I = (1.2 * P) / Period;    // integral scaling
     private double D = 0;                     // derivative scaling
+    //private double P = U * 0.45;               // proportional scaling
+    //private double I = 0;
+    //private double D = 0;                     // derivative scaling
+
 
     //private double F = 0.3/34000;    // @ 13V resting (12.8V under load)
     private double F = 0;    // @ 13V resting (12.8V under load)
     private double vF = F;            // Voltage adjusted F (use battery reading to help here)
     private double MAX_LIFT_UP_PWR = 0.95 ;
-    public double MIN_LIFT_UP_PWR = 0.0 ;
+    public double MIN_LIFT_UP_PWR = 0.01 ;
 
     private NanoClock PIDClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
     private NanoClock DownClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
@@ -48,7 +52,7 @@ public class Lift implements Component {
     private double prevPIDTime = PIDTime;              // Previous time actually updated
 
     // Create and init our PID
-    MiniPID pid = new MiniPID(P,I,D,F);                // Create the PID
+    public MiniPID pid = new MiniPID(P,I,D,F);                // Create the PID
 
     public enum Goal {
         OPEN_LOOP, UP, DOWN
@@ -60,17 +64,16 @@ public class Lift implements Component {
 
     //private static final double HOLD_LIFT_POWER = 0.15;
     private int currentPosition;
-    private static final int restPosition = 200;
-    private static final int junctionPosition = 2000;
-    private static final int lowPosition = 16000;
-    private static final int medPosition = 28000;
-    private static final int highPosition = 38000;
+    private final double heightScale = 38.0/61.0;
+    private final int restPosition = (int)(200.0 / heightScale);
+    private final int junctionPosition = (int)(2000.0 / heightScale);
+    private final int lowPosition = (int)(16000.0 / heightScale);
+    private final int medPosition = (int)(27500.0 / heightScale);
+    private final int highPosition = (int)(38000.0 / heightScale);
     private static final int cone5 = 2000;
     private static final int cone4 = 2000;
     private static final int cone3 = 2000;
     private static final int cone2 = 2000;
-
-
 
     private final DcMotor fl;
     private final DcMotor fr;
@@ -82,6 +85,7 @@ public class Lift implements Component {
     private TimerCanceller extendLiftTimerCanceller = new TimerCanceller(500);
 
     private Goal goal = Goal.OPEN_LOOP;
+    private Goal prevGoal = Goal.OPEN_LOOP;
     private Mode mode = Mode.HIGH;
     public double pwr=0.0;
 
@@ -128,8 +132,6 @@ public class Lift implements Component {
         double now = DownClock.seconds();
         double curPos = getLiftEncoderTicks();
 
-
-
         updateLiftPID();
         switch (goal) {
             case OPEN_LOOP:
@@ -156,7 +158,11 @@ public class Lift implements Component {
             case DOWN:
                 if (curPos > restPosition) {
                     if (nextDown < now) {
-                        setLiftPos(Math.max(restPosition, curPos - 1000.0));
+                        if (prevGoal != Goal.DOWN) {
+                            setLiftPos(Math.max(restPosition, curPos - (1000.0 / heightScale)));
+                        } else {
+                            tgtPos = Math.max(restPosition, curPos - (1000.0 / heightScale));
+                        }
                         nextDown = now + 0.03;
                         if (curPos < 10000) {
                             pid.setOutputLimits(-0.40, 0.4);
@@ -167,7 +173,7 @@ public class Lift implements Component {
                 }
                 break;
         }
-
+        prevGoal = goal;
     }
 
     public void setGoal(Goal goal) {
@@ -239,6 +245,10 @@ public class Lift implements Component {
         }
     }
 
+    public double getTgtPos(){
+        return(tgtPos);
+    }
+
     public void setLiftPos(double tgtPos) {
 
         double curPos = getLiftEncoderTicks();
@@ -262,7 +272,7 @@ public class Lift implements Component {
                         pid.setOutputLimits(MIN_LIFT_UP_PWR*0.5, MAX_LIFT_UP_PWR);
                     }
                 } else {
-                    pid.setOutputLimits(-0.10, 0.2);             // Make sure we don't exceed some maximum rating
+                    pid.setOutputLimits(-0.35, 0.2);             // Make sure we don't exceed some maximum rating
                 }
             } else {
                 // These controls

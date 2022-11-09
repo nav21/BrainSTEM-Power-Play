@@ -61,7 +61,8 @@ public class AutoBrainSTEMRobot implements Runnable
             }
         }
 
-        lift.MIN_LIFT_UP_PWR = Range.clip(0.2 + ((12.3 - Vsense.getVoltage())*0.1),0.1,0.3);
+        // TODO
+        //lift.MIN_LIFT_UP_PWR = Range.clip(0.2 + ((12.3 - Vsense.getVoltage())*0.1),0.1,0.3);
 
         //Add all components to an array list so they can be easily initialized
         components.add(drive);

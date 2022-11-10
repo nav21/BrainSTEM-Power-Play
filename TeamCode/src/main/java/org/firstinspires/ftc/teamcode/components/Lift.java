@@ -23,10 +23,10 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Lift implements Component {
 
-    private double U = 1.0 / 500.0;
+    private double U = 1.0 / 1500.0;
     private double Period = 4.5;
     private double P = U * 0.45 ;               // proportional scaling
-    private double I = (1.2 * P) / Period;    // integral scaling
+    private double I = (0.5 * P) / Period;    // integral scaling
     private double D = 0;                     // derivative scaling
     //private double P = U * 0.45;               // proportional scaling
     //private double I = 0;
@@ -43,6 +43,7 @@ public class Lift implements Component {
     private NanoClock DownClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
     private double nextDown = 0.0;
     public double tgtPos = -1.0 ;                     // Target
+    public double pidTgtPos = -1.0 ;                     // Target
     public double PIDTime = 0.025;                     // Ideal/minimum interval
     private double PIDStartTime = PIDClock.seconds();  // When did we start
     private double nextPID = PIDStartTime;             // When is the next time we can process PID
@@ -67,13 +68,14 @@ public class Lift implements Component {
     private final double heightScale = 38.0/61.0;
     private final int restPosition = (int)(200.0 / heightScale);
     private final int junctionPosition = (int)(2000.0 / heightScale);
-    private final int lowPosition = (int)(16000.0 / heightScale);
-    private final int medPosition = (int)(27500.0 / heightScale);
-    private final int highPosition = (int)(38000.0 / heightScale);
-    private static final int cone5 = 2000;
-    private static final int cone4 = 2000;
-    private static final int cone3 = 2000;
-    private static final int cone2 = 2000;
+    private final int lowPosition = (int)((16000.0 / heightScale)+1000);
+    private final int medPosition = (int)((27500.0 / heightScale)+400);
+    private final int highPosition = (int)((38000.0 / heightScale)+1000);
+
+    private final int cone5 = restPosition+(2025*4);
+    private final int cone4 = restPosition+(2025*3);
+    private final int cone3 = restPosition+(2025*2);
+    private final int cone2 = restPosition+(2025*1);
 
     private final DcMotor fl;
     private final DcMotor fr;
@@ -132,6 +134,22 @@ public class Lift implements Component {
         double now = DownClock.seconds();
         double curPos = getLiftEncoderTicks();
 
+        if(tgtPos >= curPos) {
+            pidTgtPos = tgtPos;
+            pid.setOutputLimits(MIN_LIFT_UP_PWR, MAX_LIFT_UP_PWR);
+        } else {
+            if (nextDown < now) {
+                pidTgtPos = Math.max(tgtPos, curPos - (1000.0 / heightScale));
+                nextDown = now + 0.03;
+                if (curPos < 25000) {
+                    pid.setOutputLimits(-0.45, MAX_LIFT_UP_PWR);
+                } else if (curPos < 55000) {
+                    pid.setOutputLimits(-0.04, MAX_LIFT_UP_PWR);
+                } else {
+                    pid.setOutputLimits(0.0, MAX_LIFT_UP_PWR);
+                }
+            }
+        }
         updateLiftPID();
         switch (goal) {
             case OPEN_LOOP:
@@ -156,20 +174,8 @@ public class Lift implements Component {
                 }
                 break;
             case DOWN:
-                if (curPos > restPosition) {
-                    if (nextDown < now) {
-                        if (prevGoal != Goal.DOWN) {
-                            setLiftPos(Math.max(restPosition, curPos - (1000.0 / heightScale)));
-                        } else {
-                            tgtPos = Math.max(restPosition, curPos - (1000.0 / heightScale));
-                        }
-                        nextDown = now + 0.03;
-                        if (curPos < 10000) {
-                            pid.setOutputLimits(-0.40, 0.4);
-                        }
-                    }
-                } else {
-                    pid.setOutputLimits(-0.25, 0.4);             // Make sure we don't exceed some maximum rating
+                if (prevGoal != Goal.DOWN) {
+                    setLiftPos(restPosition);
                 }
                 break;
         }
@@ -231,16 +237,16 @@ public class Lift implements Component {
                 setLiftPos(highPosition);
                 break;
             case CONE_4:
-                setLiftPos(highPosition);
+                setLiftPos(cone4);
                 break;
             case CONE_5:
-                setLiftPos(highPosition);
+                setLiftPos(cone5);
                 break;
             case CONE_3:
-                setLiftPos(highPosition);
+                setLiftPos(cone3);
                 break;
             case CONE_2:
-                setLiftPos(highPosition);
+                setLiftPos(cone2);
                 break;
         }
     }
@@ -263,17 +269,7 @@ public class Lift implements Component {
             pid.reset();
 
             if( getGoal() == Goal.UP ) {
-                if (tgtPos > curPos) {
-                    if(tgtPos > medPosition) {
-                        pid.setOutputLimits(MIN_LIFT_UP_PWR, MAX_LIFT_UP_PWR);
-                    } else if(tgtPos > lowPosition) {
-                        pid.setOutputLimits(MIN_LIFT_UP_PWR*0.75, MAX_LIFT_UP_PWR);
-                    } else {
-                        pid.setOutputLimits(MIN_LIFT_UP_PWR*0.5, MAX_LIFT_UP_PWR);
-                    }
-                } else {
-                    pid.setOutputLimits(-0.35, 0.2);             // Make sure we don't exceed some maximum rating
-                }
+                pid.setOutputLimits(MIN_LIFT_UP_PWR, MAX_LIFT_UP_PWR);
             } else {
                 // These controls
                 pid.setOutputLimits(-0.25, 0.2);             // Make sure we don't exceed some maximum rating
@@ -294,7 +290,7 @@ public class Lift implements Component {
 
             // And we are supposed to be powered
             // Make a different way to request lift stop
-            if (tgtPos >= 0.0) {
+            if (pidTgtPos >= 0.0) {
 
                 PIDCount++;
 
@@ -305,11 +301,11 @@ public class Lift implements Component {
                 if (PIDCount > 1) {
 
                     // Compute PID values and include some time skew if there was any
-                    pwr = pid.getOutput(curPos, tgtPos, ((now-prevPIDTime)/PIDTime));
+                    pwr = pid.getOutput(curPos, pidTgtPos, ((now-prevPIDTime)/PIDTime));
 
                 } else {
                     // just set a fake feed-forward value on the first sample.
-                    pwr = (vF * (tgtPos-curPos));
+                    pwr = (vF * (pidTgtPos-curPos));
                 }
 
                 // Set the power

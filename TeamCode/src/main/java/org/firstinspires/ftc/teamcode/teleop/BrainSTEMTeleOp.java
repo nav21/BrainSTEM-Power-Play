@@ -66,7 +66,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
     private int clawToggleHits = 0;
 
-    private int heightToggleHits=3;
+    private int heightToggleHits=7;
     private int mode = 0;
 
 
@@ -89,13 +89,15 @@ public class BrainSTEMTeleOp extends LinearOpMode {
         if( robot.claw.isSafeToChangeClawGoal() && ((robot.claw.getCurrentGoal() == Claw.Goal.RETURN_MID) || (robot.claw.getCurrentGoal() == Claw.Goal.COLLECT_MID))) {
             moveLiftUp = gamepad1.right_bumper;
             moveLiftDown = gamepad1.left_bumper;
+        }
 
+        if((robot.lift.getGoal() == Lift.Goal.DOWN) || ( robot.claw.isSafeToChangeClawGoal() && ((robot.claw.getCurrentGoal() == Claw.Goal.RETURN_MID) || (robot.claw.getCurrentGoal() == Claw.Goal.COLLECT_MID)))) {
             heightIncStickyButton.update(gamepad1.y);
             heightToggleHits += heightIncStickyButton.getState() ? 1 : 0;
 
             heightDecStickyButton.update(gamepad1.x);
             heightToggleHits -= heightDecStickyButton.getState() ? 1 : 0;
-            Range.clip(heightToggleHits, 0, 3);
+            Range.clip(heightToggleHits, 0, 7);
         }
     }
 
@@ -154,17 +156,29 @@ public class BrainSTEMTeleOp extends LinearOpMode {
                     break;
             }
 
-            switch (heightToggleHits % 4) {
+            switch (heightToggleHits % 8) {
                 case 0:
                     robot.lift.setMode(Lift.Mode.JUNC);
                     break;
                 case 1:
-                    robot.lift.setMode(Lift.Mode.LOW);
+                    robot.lift.setMode(Lift.Mode.CONE_2);
                     break;
                 case 2:
-                    robot.lift.setMode(Lift.Mode.MED);
+                    robot.lift.setMode(Lift.Mode.CONE_3);
                     break;
                 case 3:
+                    robot.lift.setMode(Lift.Mode.CONE_4);
+                    break;
+                case 4:
+                    robot.lift.setMode(Lift.Mode.CONE_5);
+                    break;
+                case 5:
+                    robot.lift.setMode(Lift.Mode.LOW);
+                    break;
+                case 6:
+                    robot.lift.setMode(Lift.Mode.MED);
+                    break;
+                case 7:
                     robot.lift.setMode(Lift.Mode.HIGH);
                     break;
             }

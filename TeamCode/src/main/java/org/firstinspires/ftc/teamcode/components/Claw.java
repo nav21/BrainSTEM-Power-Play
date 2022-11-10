@@ -19,25 +19,24 @@ public class Claw implements Component {
 
     private final ServoImplEx clawServoRight;
     private final ServoImplEx clawServoLeft;
-    //private final ServoImplEx rightFlipServo;
+    private final ServoImplEx rightFlipServo;
     private final ServoImplEx leftFlipServo;
-    // Alternate timed servo code
-    // private final TimedServo timedRightFlipServo;
+    private final TimedServo timedRightFlipServo;
     private final TimedServo timedLeftFlipServo;
     private FlipPosition curFlipPosition = FlipPosition.INIT;
     private ClawPosition curClawPosition = ClawPosition.INIT;
 
-    private final double maxLeft=1.0;
+    private final double depositLeft=1.0;
     private final double midLeft= 0.6;
-    private final double minLeft=0.197;
-    // private final double midRight= 0;
-    // private final double midRight= 0.6;
-    // private final double minRight=0.0245;
+    private final double collectLeft=0.197;
+    private final double depositRight= 1.0 - depositLeft;
+    private final double midRight= 1.0 - midLeft;
+    private final double collectRight= 1.0 - collectLeft;
 
     private Goal currentGoal;
 
-    private TimerCanceller flipUpCanceller = new TimerCanceller(500);
-    private TimerCanceller clawOpenCanceller = new TimerCanceller(250);
+    private TimerCanceller flipUpCanceller = new TimerCanceller(300);
+    private TimerCanceller clawOpenCanceller = new TimerCanceller(200);
     private TimerCanceller depositorStateCanceller = new TimerCanceller(2000);
     private TimerCanceller returnMidFlipCanceller = new TimerCanceller(250);
 
@@ -45,9 +44,9 @@ public class Claw implements Component {
         clawServoRight = map.get(ServoImplEx.class,"clawServoRight");
         clawServoLeft = map.get(ServoImplEx.class,"clawServoLeft");
         leftFlipServo = map.get(ServoImplEx.class,"leftFlipServo");
-        //rightFlipServo = map.get(ServoImplEx.class,"RightFlipServo");
+        rightFlipServo = map.get(ServoImplEx.class,"rightFlipServo");
         timedLeftFlipServo = new TimedServo(leftFlipServo);
-        // timedRightFlipServo = new TimedServo(rightFlipServo);
+        timedRightFlipServo = new TimedServo(rightFlipServo);
 
         currentGoal = Goal.OPEN_LOOP;
     }
@@ -58,17 +57,19 @@ public class Claw implements Component {
 //        NanoClock clock = NanoClock.system();
 //        double now;
 //
-//        leftFlipServo.setPosition(minLeft);
+//        leftFlipServo.setPosition(collectLeft);
+//        rightFlipServo.setPosition(collectRight);
 //        curFlipPosition = FlipPosition.COLLECT;
 //        now = clock.seconds();
-//        while (clock.seconds() < (now + 0.5 ) ) { }
+//        while (clock.seconds() < (now + 0.500 ) ) { }
 //        setClawServoPosition(ClawPosition.CLOSED);
     }
 
     @Override
     public void initTeleOp() {
         setClawServoPosition(ClawPosition.OPEN);
-        leftFlipServo.setPosition(minLeft);
+        leftFlipServo.setPosition(collectLeft);
+        rightFlipServo.setPosition(collectRight);
         curFlipPosition = FlipPosition.COLLECT;
     }
 
@@ -76,6 +77,7 @@ public class Claw implements Component {
     public void updateComponent() {
         //timedRightFlipServo.update();
         timedLeftFlipServo.update();
+        timedRightFlipServo.update();
         switch (currentGoal) {
             case OPEN_LOOP:
                 break;
@@ -128,19 +130,19 @@ public class Claw implements Component {
                     depositorStateCanceller.reset(1);
                     break;
                 case COLLECT_MID:
-                    depositorStateCanceller.reset(1000);
+                    depositorStateCanceller.reset(650);
                     break;
                 case FLIP:
-                    depositorStateCanceller.reset(400);
+                    depositorStateCanceller.reset(350);
                     break;
                 case RELEASE:
                     depositorStateCanceller.reset(250);
                     break;
                 case RETURN_MID:
-                    depositorStateCanceller.reset(750);
+                    depositorStateCanceller.reset(650);
                     break;
                 case RESET:
-                    depositorStateCanceller.reset(600);
+                    depositorStateCanceller.reset(500);
                     break;
                 default:
                     depositorStateCanceller.reset(2000);
@@ -161,9 +163,13 @@ public class Claw implements Component {
         return(clawServoLeft.getPosition());
     }
 
-    public void setClawServoWordPosition(double position) {
-        clawServoRight.setPosition(position);
+    public void setLeftFlipPosition(double position) {
+        leftFlipServo.setPosition(position);
     }
+    public void setRightFlipPosition(double position) {
+        rightFlipServo.setPosition(position);
+    }
+
     //TODO: FIX THESE VALUES
     public void setClawServoPosition(ClawPosition position) {
         if (curClawPosition != position) {
@@ -188,25 +194,29 @@ public class Claw implements Component {
         switch (position) {
             case COLLECT:
                 if( curFlipPosition == FlipPosition.MID) {
-                    timedLeftFlipServo.setTimedPosition(minLeft, 500);
+                    timedLeftFlipServo.setTimedPosition(collectLeft, 350);
+                    timedRightFlipServo.setTimedPosition(collectRight, 350);
                 } else if( curFlipPosition == FlipPosition.DEPOSIT) {
-                    timedLeftFlipServo.setTimedPosition(minLeft, 1000);
+                    timedLeftFlipServo.setTimedPosition(collectLeft, 700);
+                    timedRightFlipServo.setTimedPosition(collectRight, 700);
                 }
                 break;
             case MID:
                 if( curFlipPosition != FlipPosition.MID) {
-                    timedLeftFlipServo.setTimedPosition(midLeft, 500);
+                    timedLeftFlipServo.setTimedPosition(midLeft, 350);
+                    timedRightFlipServo.setTimedPosition(midRight, 350);
                 }
                 break;
             case DEPOSIT:
                 if( curFlipPosition == FlipPosition.MID) {
-                    timedLeftFlipServo.setTimedPosition(maxLeft, 500);
+                    timedLeftFlipServo.setTimedPosition(depositLeft, 350);
+                    timedRightFlipServo.setTimedPosition(depositRight, 350);
                 } else if( curFlipPosition == FlipPosition.COLLECT) {
-                    timedLeftFlipServo.setTimedPosition(maxLeft, 1000);
+                    timedLeftFlipServo.setTimedPosition(depositLeft, 700);
+                    timedRightFlipServo.setTimedPosition(depositRight, 700);
                 }
                 break;
         }
         curFlipPosition = position;
     }
-
 }

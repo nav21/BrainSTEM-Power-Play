@@ -216,7 +216,19 @@ public class Lift implements Component {
     }
 
     public double getLiftEncoderTicks() {
+
         return bl.getCurrentPosition();
+
+    }
+    public double getEncoderTicks() {
+
+        return fl.getCurrentPosition();
+
+    }
+    public double get2EncoderTicks() {
+
+        return fr.getCurrentPosition();
+
     }
 
     public void runLiftToPosition(LiftPosition position) {

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.components.BMecanumDrive;
+import org.firstinspires.ftc.teamcode.components.DriveConstants;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -22,18 +23,42 @@ public class SplineTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(30, 30), 0)
+        Pose2d startPose = new Pose2d(-36, -64.6, Math.toRadians(-90));
+        drive.setPoseEstimate(startPose);
+        Trajectory goToMedGoalPosition = drive.trajectoryBuilder(startPose,true)
+                .lineToSplineHeading(new Pose2d(-36, -24, Math.toRadians(-180)), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+//                .addTemporalMarker(0.5, () -> robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID))
+//                .addTemporalMarker(1.1, () -> robot.lift.setGoal(Lift.Goal.UP))
+//                .addTemporalMarker(2, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
                 .build();
+        Trajectory depositPreloadMedGoal = drive.trajectoryBuilder(goToMedGoalPosition.end())
+                .lineTo(new Vector2d(-30, -24), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+//                .addTemporalMarker(1.5, () -> robot.claw.setCurrentGoal(Claw.Goal.RELEASE))
+//                .addTemporalMarker(2, () -> robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID))
+//                .addTemporalMarker(2.5, () -> robot.lift.setGoal(Lift.Goal.DOWN))
+                .build();
+        Trajectory goToFirstConeAndGetReadyForPark1 = drive.trajectoryBuilder(depositPreloadMedGoal.end())
+                .lineToConstantHeading(new Vector2d(-36, -24), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        Trajectory goToFirstConeAndGetReadyForPark2 = drive.trajectoryBuilder(goToFirstConeAndGetReadyForPark1.end())
+                .lineToConstantHeading(new Vector2d(-42, -12), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        drive.followTrajectory(goToMedGoalPosition);
+        sleep(200);
+        drive.followTrajectory(depositPreloadMedGoal);
+        sleep(200);
+        drive.followTrajectory(goToFirstConeAndGetReadyForPark1);
+        sleep(1);
+        drive.followTrajectory(goToFirstConeAndGetReadyForPark2);
 
-        drive.followTrajectory(traj);
 
-        sleep(2000);
+//        robot.drive.followTrajectory(traj7);
+//        sleep(200);
+//        robot.drive.followTrajectory(traj8);
 
-        drive.followTrajectory(
-                drive.trajectoryBuilder(traj.end(), true)
-                        .splineTo(new Vector2d(0, 0), Math.toRadians(180))
-                        .build()
-        );
     }
 }

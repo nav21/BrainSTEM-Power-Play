@@ -114,7 +114,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
     }
 
     public BMecanumDrive(HardwareMap hardwareMap) {
-        this(hardwareMap, 0.5);
+        this(hardwareMap, 2);
     }
 
     public BMecanumDrive(HardwareMap hardwareMap, double timeout) {
@@ -297,6 +297,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
             motor.setPIDFCoefficients(runMode, compensatedCoefficients);
         }
     }
+
 
     public void setWeightedDrivePower(Pose2d drivePower) {
         Pose2d vel = drivePower;

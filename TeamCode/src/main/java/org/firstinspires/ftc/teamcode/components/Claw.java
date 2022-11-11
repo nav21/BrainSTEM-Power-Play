@@ -28,9 +28,11 @@ public class Claw implements Component {
 
     private final double depositLeft=1.0;
     private final double midLeft= 0.6;
+    private final double initLeft=0.4;
     private final double collectLeft=0.197;
     private final double depositRight= 1.0 - depositLeft;
     private final double midRight= 1.0 - midLeft;
+    private final double initRight= 1.0 - initLeft;
     private final double collectRight= 1.0 - collectLeft;
 
     private Goal currentGoal;
@@ -54,15 +56,18 @@ public class Claw implements Component {
     @Override
     public void initAuto()
     {
-//        NanoClock clock = NanoClock.system();
-//        double now;
-//
-//        leftFlipServo.setPosition(collectLeft);
-//        rightFlipServo.setPosition(collectRight);
-//        curFlipPosition = FlipPosition.COLLECT;
-//        now = clock.seconds();
-//        while (clock.seconds() < (now + 0.500 ) ) { }
-//        setClawServoPosition(ClawPosition.CLOSED);
+        NanoClock clock = NanoClock.system();
+        double now;
+        leftFlipServo.setPosition(initLeft);
+        rightFlipServo.setPosition(initRight);
+        now = clock.seconds();
+        while (clock.seconds() < (now + 1) ) { }
+        leftFlipServo.setPosition(collectLeft);
+        rightFlipServo.setPosition(collectRight);
+        curFlipPosition = FlipPosition.COLLECT;
+        now = clock.seconds();
+        while (clock.seconds() < (now + 0.75) ) { }
+        setClawServoPosition(ClawPosition.CLOSED);
     }
 
     @Override

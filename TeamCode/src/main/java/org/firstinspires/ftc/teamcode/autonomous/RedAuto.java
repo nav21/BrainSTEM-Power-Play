@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.acmerobotics.roadrunner.util.NanoClock;
 
@@ -28,6 +29,7 @@ import org.firstinspires.ftc.teamcode.components.Lift;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
+@Disabled
 @Autonomous(group = "auto")
 public class RedAuto extends BaseAuto {
     public static double DISTANCE = 24; // inches
@@ -56,7 +58,7 @@ public class RedAuto extends BaseAuto {
         Trajectory traj = robot.drive.trajectoryBuilder(startPose,true)
                 .lineToSplineHeading(new Pose2d(-36, -26, Math.toRadians(-180)), BMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .addTemporalMarker(0.5, () -> robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID))
+                .addTemporalMarker(0.5, () -> robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID))
 //                .addTemporalMarker(1.1, () -> robot.lift.setGoal(Lift.Goal.UP))
 //                .addTemporalMarker(2, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
                 .build();

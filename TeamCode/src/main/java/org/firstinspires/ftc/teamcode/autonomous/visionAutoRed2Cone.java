@@ -55,13 +55,22 @@ public class visionAutoRed2Cone extends BaseAuto {
                 .lineTo(new Vector2d(-32, 25), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        Trajectory goToFirstConeAndGetReadyForPark1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())
-                .lineToConstantHeading(new Vector2d(-36, 25), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        Trajectory goToFirstCone1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())
+                .lineToConstantHeading(new Vector2d(-37, -25), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.5, () -> robot.lift.setGoal(Lift.Goal.DOWN))
+                .addTemporalMarker(0.5, () -> robot.lift.setMode(Lift.Mode.CONE_5))
                 .build();
-        Trajectory strafeForPark = robot.drive.trajectoryBuilder(goToFirstConeAndGetReadyForPark1.end())
-                .lineToConstantHeading(new Vector2d(-37, 36), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+        Trajectory goToFirstCone2 = robot.drive.trajectoryBuilder(goToFirstCone1.end())
+                .lineToConstantHeading(new Vector2d(-40, -14), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        Trajectory goToFirstCone3 = robot.drive.trajectoryBuilder(goToFirstCone2.end())
+                .lineToConstantHeading(new Vector2d(-64, -14), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
+                .build();
+        Trajectory strafeForPark = robot.drive.trajectoryBuilder(goToFirstCone1.end()) // TODO change this end trajectoy
+                .lineToConstantHeading(new Vector2d(-37, -36), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         Trajectory park1 = robot.drive.trajectoryBuilder(strafeForPark.end())
@@ -89,8 +98,13 @@ public class visionAutoRed2Cone extends BaseAuto {
         sleep(350);
         robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID);
         sleep(400);
-        robot.drive.followTrajectory(goToFirstConeAndGetReadyForPark1);
+        robot.drive.followTrajectory(goToFirstCone1);
         sleep(750);
+        robot.drive.followTrajectory(goToFirstCone2);
+        sleep(750);
+        robot.drive.followTrajectory(goToFirstCone3);
+        sleep(750);
+        robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
         robot.drive.followTrajectory(strafeForPark);
         sleep(1000);
         if (signalSleevePosition == SignalSleevePosition.ONE) {

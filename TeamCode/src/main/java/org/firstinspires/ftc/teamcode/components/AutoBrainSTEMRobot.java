@@ -109,6 +109,12 @@ public class AutoBrainSTEMRobot implements Runnable
             component.initAuto();
     }
 
+    public void updateComponents()
+    {
+        for (Component component : components)
+            component.updateComponent();
+    }
+
     public String test()
     {
         String failures = "";

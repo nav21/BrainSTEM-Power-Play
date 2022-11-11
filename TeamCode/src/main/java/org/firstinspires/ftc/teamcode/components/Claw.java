@@ -23,8 +23,8 @@ public class Claw implements Component {
     private final ServoImplEx leftFlipServo;
     private final TimedServo timedRightFlipServo;
     private final TimedServo timedLeftFlipServo;
-    private FlipPosition curFlipPosition = FlipPosition.INIT;
-    private ClawPosition curClawPosition = ClawPosition.INIT;
+    private FlipPosition curFlipPosition = FlipPosition.UNKNOWN;
+    private ClawPosition curClawPosition = ClawPosition.UNKNOWN;
 
     private final double depositLeft=1.0;
     private final double midLeft= 0.6;
@@ -58,15 +58,27 @@ public class Claw implements Component {
     {
         NanoClock clock = NanoClock.system();
         double now;
+
+        setClawServoPosition(ClawPosition.INIT);
+        now = clock.seconds();
+        while (clock.seconds() < (now + 0.5) ) { }
+
         leftFlipServo.setPosition(initLeft);
         rightFlipServo.setPosition(initRight);
+
         now = clock.seconds();
         while (clock.seconds() < (now + 1) ) { }
-        leftFlipServo.setPosition(collectLeft);
-        rightFlipServo.setPosition(collectRight);
+
+        timedLeftFlipServo.setTimedPosition(collectLeft,350);
+        timedRightFlipServo.setTimedPosition(collectRight,350);
         curFlipPosition = FlipPosition.COLLECT;
+
         now = clock.seconds();
-        while (clock.seconds() < (now + 0.75) ) { }
+        while (clock.seconds() < (now + 0.75) ) {
+            timedLeftFlipServo.update();
+            timedRightFlipServo.update();
+        }
+
         setClawServoPosition(ClawPosition.CLOSED);
     }
 
@@ -183,6 +195,7 @@ public class Claw implements Component {
                     clawServoRight.setPosition(0.15);   // Smaller number is more closed
                     clawServoLeft.setPosition(0.79);    // Larger number is more closed
                     break;
+                case INIT:
                 case RELEASE:
                     clawServoRight.setPosition(0.22);
                     clawServoLeft.setPosition(0.76);

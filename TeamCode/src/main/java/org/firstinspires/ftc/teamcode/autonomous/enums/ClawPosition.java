@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.autonomous.enums;
 
 public enum ClawPosition {
-    OPEN, CLOSED, RELEASE, INIT
+    OPEN, CLOSED, RELEASE, INIT, UNKNOWN
 }

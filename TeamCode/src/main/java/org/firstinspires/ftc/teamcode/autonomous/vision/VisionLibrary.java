@@ -69,7 +69,7 @@ public class VisionLibrary {
                  * away from the user.
                  */
                 // Changed by ToddS webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-                webcam.startStreaming(640, 480, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                webcam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override

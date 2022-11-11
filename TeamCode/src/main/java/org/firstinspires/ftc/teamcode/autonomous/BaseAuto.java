@@ -12,22 +12,38 @@ import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.AutoBrainSTEMRobot;
 
 public abstract class BaseAuto extends LinearOpMode {
-    public static double DISTANCE = 24; // inches
     AutoBrainSTEMRobot robot=null;
 
     @Override
     public void runOpMode() {
         PhotonCore.enable();
+
+        telemetry.addLine("Creating Robot class");
+        telemetry.update();
         robot = new AutoBrainSTEMRobot(this);
+
+        telemetry.addLine("Creating Vision Library");
+        telemetry.update();
         VisionLibrary visionLibrary = new VisionLibrary(this);
 
+        telemetry.addLine("Starting threads");
+        telemetry.update();
         robot.start();
 
+        telemetry.addLine("InitAuto for components");
+        telemetry.update();
         robot.initAuto();
+
+        telemetry.addLine("Building paths");
+        telemetry.update();
+        buildPaths(robot);
+
+        telemetry.addLine("Initializing Vision Library");
+        telemetry.update();
         visionLibrary.init();
 
-        SignalSleevePosition signalSleevePosition = SignalSleevePosition.UNKNOWN;
-        SignalSleevePosition signalSleevePositionTemp = SignalSleevePosition.UNKNOWN;
+        SignalSleevePosition signalSleevePosition = SignalSleevePosition.TWO;
+        SignalSleevePosition signalSleevePositionTemp;
 
         while (!opModeIsActive() && !isStopRequested()) {
             // Never forget the last valid thing we saw.
@@ -50,5 +66,6 @@ public abstract class BaseAuto extends LinearOpMode {
         robot.stop();
     }
 
+    public abstract void buildPaths(AutoBrainSTEMRobot robot);
     public abstract void runMain(AutoBrainSTEMRobot robot, SignalSleevePosition signalSleevePosition);
 }

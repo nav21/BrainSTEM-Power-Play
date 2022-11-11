@@ -89,22 +89,37 @@ public class visionLeft_1 extends BaseAuto {
         robot.lift.setGoal(Lift.Goal.OPEN_LOOP);
         robot.claw.setCurrentGoal(Claw.Goal.OPEN_LOOP);
         robot.lift.setMode(Lift.Mode.MED);
-        robot.drive.followTrajectory(goToMedGoalPosition);
-        sleep(200);
-        robot.drive.followTrajectory(depositPreloadMedGoal);
+        robot.drive.followTrajectoryAsync(goToMedGoalPosition);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(200);
+
+        robot.drive.followTrajectoryAsync(depositPreloadMedGoal);
+        CheckWait(0);        // FollowTrajectory
+
         robot.claw.setCurrentGoal(Claw.Goal.RELEASE);
-        sleep(350);
+        CheckWait(350);
+
         robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID);
-        sleep(400);
-        robot.drive.followTrajectory(goToFirstConeAndGetReadyForPark1);
-        sleep(750);
-        robot.drive.followTrajectory(strafeForPark);
-        sleep(1000);
+        CheckWait(400);
+
+        robot.drive.followTrajectoryAsync(goToFirstConeAndGetReadyForPark1);
+        CheckWait(0);        // FollowTrajectory
+        CheckWait(750);
+
+        robot.drive.followTrajectoryAsync(strafeForPark);
+        CheckWait(0);        // FollowTrajectory
+        CheckWait(1000);
+
         if (signalSleevePosition == SignalSleevePosition.ONE) {
-            robot.drive.followTrajectory(park1);
+            robot.drive.followTrajectoryAsync(park1);
+            CheckWait(0);        // FollowTrajectory
         } else if (signalSleevePosition == SignalSleevePosition.THREE){
-            robot.drive.followTrajectory(park3);
+            robot.drive.followTrajectoryAsync(park3);
+            CheckWait(0);        // FollowTrajectory
         }
-        sleep(3000);
+
+        robot.lift.setGoal(Lift.Goal.DOWN);
+        robot.claw.setCurrentGoal(Claw.Goal.RESET);
+        CheckWait(3000);    // Sleep
     }
 }

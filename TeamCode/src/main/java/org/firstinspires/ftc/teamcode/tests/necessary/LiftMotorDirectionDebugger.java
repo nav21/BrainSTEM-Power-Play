@@ -40,6 +40,7 @@ import org.firstinspires.ftc.teamcode.components.Lift;
  * Uncomment the @Disabled tag below to use this opmode.
  */
 @Config
+@Disabled
 @TeleOp(group = "drive")
 public class LiftMotorDirectionDebugger extends LinearOpMode {
     public static double MOTOR_POWER = 0.7;

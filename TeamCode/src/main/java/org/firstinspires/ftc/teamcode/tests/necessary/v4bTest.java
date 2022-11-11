@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
@@ -43,6 +44,7 @@ import org.firstinspires.ftc.teamcode.components.Lift;
  * Uncomment the @Disabled tag below to use this opmode.
  */
 @Config
+@Disabled
 @TeleOp(group = "drive")
 public class v4bTest extends LinearOpMode {
 

@@ -21,6 +21,11 @@ import org.firstinspires.ftc.teamcode.components.Lift;
 public class visionAutoRed2Cone extends BaseAuto {
     public static double DISTANCE = 24; // inches
 
+    @Override
+    public void buildPaths(AutoBrainSTEMRobot robot) {
+
+    }
+
     public void runMain(AutoBrainSTEMRobot robot, SignalSleevePosition signalSleevePosition) {
         /*
         // Example of 'Async' use to allow HW updating for things like slower servos and SWPIDs

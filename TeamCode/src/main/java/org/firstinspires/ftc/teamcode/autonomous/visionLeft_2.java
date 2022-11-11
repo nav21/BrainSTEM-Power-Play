@@ -102,11 +102,11 @@ public class visionLeft_2 extends BaseAuto {
         robot.lift.setGoal(Lift.Goal.OPEN_LOOP);
         robot.claw.setCurrentGoal(Claw.Goal.OPEN_LOOP);
         robot.lift.setMode(Lift.Mode.MED);
-        robot.drive.followTrajectory(goToMedGoalPosition);
+        robot.drive.followTrajectoryAsync(goToMedGoalPosition);
         CheckWait(0);         // FollowTrajectory
         CheckWait(200);
 
-        robot.drive.followTrajectory(depositPreloadMedGoal);
+        robot.drive.followTrajectoryAsync(depositPreloadMedGoal);
         CheckWait(0);         // FollowTrajectory
 
         robot.claw.setCurrentGoal(Claw.Goal.RELEASE);
@@ -115,29 +115,29 @@ public class visionLeft_2 extends BaseAuto {
         robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID);
         CheckWait(400);
 
-        robot.drive.followTrajectory(goToFirstCone1);
+        robot.drive.followTrajectoryAsync(goToFirstCone1);
         CheckWait(0);         // FollowTrajectory
         CheckWait(750);
 
-        robot.drive.followTrajectory(goToFirstCone2);
+        robot.drive.followTrajectoryAsync(goToFirstCone2);
         CheckWait(0);         // FollowTrajectory
         CheckWait(750);
 
-        robot.drive.followTrajectory(goToFirstCone3);
+        robot.drive.followTrajectoryAsync(goToFirstCone3);
         CheckWait(0);         // FollowTrajectory
         CheckWait(750);
 
         robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
-        robot.drive.followTrajectory(strafeForPark);
+        robot.drive.followTrajectoryAsync(strafeForPark);
         CheckWait(0);         // FollowTrajectory
         CheckWait(1000);
 
         if (signalSleevePosition == SignalSleevePosition.ONE) {
-            robot.drive.followTrajectory(park1);
+            robot.drive.followTrajectoryAsync(park1);
             CheckWait(0);         // FollowTrajectory
 
         } else if (signalSleevePosition == SignalSleevePosition.THREE){
-            robot.drive.followTrajectory(park3);
+            robot.drive.followTrajectoryAsync(park3);
             CheckWait(0);         // FollowTrajectory
 
         }

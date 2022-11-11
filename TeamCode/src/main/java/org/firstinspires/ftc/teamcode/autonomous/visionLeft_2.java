@@ -21,7 +21,9 @@ import org.firstinspires.ftc.teamcode.components.Lift;
 public class visionLeft_2 extends BaseAuto {
     private Trajectory goToMedGoalPosition ;
     private Trajectory depositPreloadMedGoal;
-    private Trajectory goToFirstConeAndGetReadyForPark1;
+    Trajectory goToFirstCone1;
+    Trajectory goToFirstCone2;
+    Trajectory goToFirstCone3;
     private Trajectory strafeForPark;
     private Trajectory park1;
     private Trajectory park3;
@@ -38,9 +40,10 @@ public class visionLeft_2 extends BaseAuto {
         } else {
             d = -1.0;
         }
-        Pose2d startPose = new Pose2d(-36, d*64.6, Math.toRadians(d*90));
 
+        Pose2d startPose = new Pose2d(-36, d*64.6, Math.toRadians(d*90));
         robot.drive.setPoseEstimate(startPose);
+
         goToMedGoalPosition = robot.drive.trajectoryBuilder(startPose,true)
                 .lineToSplineHeading(new Pose2d(-36, d*36, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -54,12 +57,21 @@ public class visionLeft_2 extends BaseAuto {
                 .lineTo(new Vector2d(-32, d*25), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        goToFirstConeAndGetReadyForPark1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())
+        goToFirstCone1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())
                 .lineToConstantHeading(new Vector2d(-37, d*25), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.5, () -> robot.lift.setGoal(Lift.Goal.DOWN))
+                .addTemporalMarker(0.5, () -> robot.lift.setMode(Lift.Mode.CONE_5))
                 .build();
-        strafeForPark = robot.drive.trajectoryBuilder(goToFirstConeAndGetReadyForPark1.end())
+        goToFirstCone2 = robot.drive.trajectoryBuilder(goToFirstCone1.end())
+                .lineToConstantHeading(new Vector2d(-40, d*14), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        goToFirstCone3 = robot.drive.trajectoryBuilder(goToFirstCone2.end())
+                .lineToConstantHeading(new Vector2d(-64, d*14), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
+                .build();
+        strafeForPark = robot.drive.trajectoryBuilder(goToFirstCone1.end()) // TODO change this end trajectoy
                 .lineToConstantHeading(new Vector2d(-37, d*36), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -76,7 +88,7 @@ public class visionLeft_2 extends BaseAuto {
                 .addTemporalMarker(0.4, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
 
-        if (className.contains("blue")) {
+        if (className.contains("right")) {
             park1 = parkB;
             park3 = parkA;
         } else {
@@ -86,15 +98,16 @@ public class visionLeft_2 extends BaseAuto {
     }
 
     public void runMain(AutoBrainSTEMRobot robot, SignalSleevePosition signalSleevePosition) {
+
         robot.lift.setGoal(Lift.Goal.OPEN_LOOP);
         robot.claw.setCurrentGoal(Claw.Goal.OPEN_LOOP);
         robot.lift.setMode(Lift.Mode.MED);
-        robot.drive.followTrajectoryAsync(goToMedGoalPosition);
+        robot.drive.followTrajectory(goToMedGoalPosition);
         CheckWait(0);         // FollowTrajectory
         CheckWait(200);
 
-        robot.drive.followTrajectoryAsync(depositPreloadMedGoal);
-        CheckWait(0);        // FollowTrajectory
+        robot.drive.followTrajectory(depositPreloadMedGoal);
+        CheckWait(0);         // FollowTrajectory
 
         robot.claw.setCurrentGoal(Claw.Goal.RELEASE);
         CheckWait(350);
@@ -102,20 +115,31 @@ public class visionLeft_2 extends BaseAuto {
         robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID);
         CheckWait(400);
 
-        robot.drive.followTrajectoryAsync(goToFirstConeAndGetReadyForPark1);
-        CheckWait(0);        // FollowTrajectory
+        robot.drive.followTrajectory(goToFirstCone1);
+        CheckWait(0);         // FollowTrajectory
         CheckWait(750);
 
-        robot.drive.followTrajectoryAsync(strafeForPark);
-        CheckWait(0);        // FollowTrajectory
+        robot.drive.followTrajectory(goToFirstCone2);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(750);
+
+        robot.drive.followTrajectory(goToFirstCone3);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(750);
+
+        robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
+        robot.drive.followTrajectory(strafeForPark);
+        CheckWait(0);         // FollowTrajectory
         CheckWait(1000);
 
         if (signalSleevePosition == SignalSleevePosition.ONE) {
-            robot.drive.followTrajectoryAsync(park1);
-            CheckWait(0);        // FollowTrajectory
+            robot.drive.followTrajectory(park1);
+            CheckWait(0);         // FollowTrajectory
+
         } else if (signalSleevePosition == SignalSleevePosition.THREE){
-            robot.drive.followTrajectoryAsync(park3);
-            CheckWait(0);        // FollowTrajectory
+            robot.drive.followTrajectory(park3);
+            CheckWait(0);         // FollowTrajectory
+
         }
 
         robot.lift.setGoal(Lift.Goal.DOWN);

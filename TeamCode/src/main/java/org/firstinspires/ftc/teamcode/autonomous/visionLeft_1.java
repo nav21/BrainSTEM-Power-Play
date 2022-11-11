@@ -76,7 +76,7 @@ public class visionLeft_1 extends BaseAuto {
                 .addTemporalMarker(0.4, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
 
-        if (className.contains("blue")) {
+        if (className.contains("right")) {
             park1 = parkB;
             park3 = parkA;
         } else {

@@ -14,7 +14,16 @@ import org.firstinspires.ftc.teamcode.utils.Component;
 
 public abstract class BaseAuto extends LinearOpMode {
     AutoBrainSTEMRobot robot=null;
-    public boolean useThreads = true;
+    public boolean useThreads = false;
+
+    private StickyButton awayStickyButton = new StickyButton();
+    private StickyButton nearStickyButton = new StickyButton();
+    private StickyButton leftStickyButton = new StickyButton();
+    private StickyButton rightStickyButton = new StickyButton();
+    private StickyButton goStickyButton = new StickyButton();
+
+    public double xModifier = 0.0;
+    public double yModifier = 0.0;
 
     @Override
     public void runOpMode() {
@@ -37,6 +46,31 @@ public abstract class BaseAuto extends LinearOpMode {
         telemetry.addLine("InitAuto for components");
         telemetry.update();
         robot.initAuto();
+
+
+        goStickyButton.update(gamepad1.a);
+        while (goStickyButton.getState()==false) {
+            if (isStopRequested()) return;
+            awayStickyButton.update(gamepad1.dpad_up);
+            yModifier += awayStickyButton.getState() ? 0.5 : 0.0;
+            nearStickyButton.update(gamepad1.dpad_down);
+            yModifier -= nearStickyButton.getState() ? 0.5 : 0.0;
+
+            leftStickyButton.update(gamepad1.dpad_left);
+            xModifier -= leftStickyButton.getState() ? 0.5 : 0.0;
+            rightStickyButton.update(gamepad1.dpad_right);
+            xModifier += rightStickyButton.getState() ? 0.5 : 0.0;
+
+            telemetry.addLine("Configure X/Y offsets.");
+            telemetry.addData("XModifier: ", "%.1f (%s)", xModifier, (xModifier<0)?"Left":((xModifier>0)?"Right":"None"));
+            telemetry.addData("YModifier: ", "%.1f (%s)", yModifier, (yModifier<0)?"Farther":((yModifier>0)?"Closer":"None"));
+            telemetry.addLine("");
+            telemetry.addLine("Press <a> to continue...");
+
+            telemetry.update();
+
+            goStickyButton.update(gamepad1.a);
+        }
 
         telemetry.addLine("Building paths");
         telemetry.update();
@@ -103,6 +137,16 @@ public abstract class BaseAuto extends LinearOpMode {
         while (opModeIsActive()) {
             // Get the time
             now = localClock.seconds();
+
+            //telemetry.addData("clawToggleHits: ", clawToggleHits);
+            telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
+            telemetry.addData("Lift Mode", robot.lift.getMode());
+            telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
+            telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
+            telemetry.addData("Lift pwr: ", robot.lift.pwr);
+            telemetry.addData("Min pwr: ", robot.lift.pid.getOutputMin());
+            telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
+            telemetry.update();
 
             // Master stop
             if (!opModeIsActive()) {

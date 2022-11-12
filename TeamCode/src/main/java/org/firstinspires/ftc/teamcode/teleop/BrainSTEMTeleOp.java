@@ -67,9 +67,6 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     private int clawToggleHits = 0;
 
     private int heightToggleHits=7;
-    private int mode = 0;
-
-
 
     private void mapControls(BrainSTEMRobot robot) {
         if( robot.claw.isSafeToChangeClawGoal()) {
@@ -186,7 +183,6 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             robot.claw.updateComponent();
             robot.lift.updateComponent();
 
-            telemetry.addData("Mode:", mode);
             telemetry.addData("clawToggleHits: ", clawToggleHits);
             telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
             telemetry.addData("Lift Mode", robot.lift.getMode());

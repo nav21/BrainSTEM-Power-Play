@@ -35,12 +35,16 @@ public class visionRight_1 extends BaseAuto {
         // Left/right autos, only difference is sign and parking spot
         if (className.contains("right")) {
             d = 1.0;
+            xModifier *= -1.0;
+            yModifier *= 1.0;
         } else {
             d = -1.0;
+            xModifier *= 1.0;
+            yModifier *= 1.0;
         }
         Pose2d startPose = new Pose2d(-36, d*64.6, Math.toRadians(d*90));
-
         robot.drive.setPoseEstimate(startPose);
+
         goToMedGoalPosition = robot.drive.trajectoryBuilder(startPose,true)
                 .lineToSplineHeading(new Pose2d(-36, d*36, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -51,7 +55,7 @@ public class visionRight_1 extends BaseAuto {
                 .addTemporalMarker(2, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
                 .build();
         depositPreloadMedGoal = robot.drive.trajectoryBuilder(goToMedGoalPosition.end())
-                .lineTo(new Vector2d(-32, d*25), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(-32+xModifier, d*(25+yModifier)), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         goToFirstConeAndGetReadyForPark1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())

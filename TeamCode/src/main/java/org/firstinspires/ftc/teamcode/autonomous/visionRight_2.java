@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.components.Lift;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(name="Left_V+3", group = "auto")
-public class visionLeft_2 extends BaseAuto {
+@Autonomous(name="Right_V+3", group = "auto")
+public class visionRight_2 extends BaseAuto {
     private Trajectory goToMedGoalPosition ;
     private Trajectory depositPreloadMedGoal;
     private Trajectory goToFirstCone1;

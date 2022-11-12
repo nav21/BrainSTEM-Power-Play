@@ -75,7 +75,7 @@ public class visionLeft_2 extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         goToFirstCone3 = robot.drive.trajectoryBuilder(goToFirstCone2.end())
-                .lineToConstantHeading(new Vector2d(-65, d*143 ), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(-65, d*14), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();

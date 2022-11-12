@@ -29,6 +29,7 @@ public class visionRight_2 extends BaseAuto {
     private Trajectory goReturnToCone2;
     private Trajectory getInPositionForPark1;
     private Trajectory getInPositionForPark2;
+    private Trajectory park1;
     private Trajectory park2;
     private Trajectory park3;
     private Trajectory parkB;
@@ -75,12 +76,12 @@ public class visionRight_2 extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         goToFirstCone3 = robot.drive.trajectoryBuilder(goToFirstCone2.end())
-                .lineToConstantHeading(new Vector2d(-65, d*143 ), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(-65, d*14), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         goDepositLow1 = robot.drive.trajectoryBuilder(goToFirstCone3.end())
-                .lineToSplineHeading(new Pose2d(-52, d*21, Math.toRadians(d*225)), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToSplineHeading(new Pose2d(-52.5, d*20.5, Math.toRadians(d*225)), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.LOW))
                 .addTemporalMarker(0.6, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
@@ -104,7 +105,7 @@ public class visionRight_2 extends BaseAuto {
                 .addTemporalMarker(0.3, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         getInPositionForPark2 = robot.drive.trajectoryBuilder(getInPositionForPark1.end()) // TODO change this end trajectoy
-                .lineToConstantHeading(new Vector2d(-60, d*39), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(-60, d*38), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         parkA = robot.drive.trajectoryBuilder(getInPositionForPark2.end())
@@ -219,11 +220,11 @@ public class visionRight_2 extends BaseAuto {
 
 
 
-        if (signalSleevePosition == SignalSleevePosition.TWO) {
+        if (signalSleevePosition == SignalSleevePosition.ONE) {
             robot.drive.followTrajectoryAsync(park2);
             CheckWait(0);         // FollowTrajectory
 
-        } else if (signalSleevePosition == SignalSleevePosition.THREE){
+        } else if (signalSleevePosition == SignalSleevePosition.TWO){
             robot.drive.followTrajectoryAsync(park3);
             CheckWait(0);         // FollowTrajectory
 

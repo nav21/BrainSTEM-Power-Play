@@ -115,7 +115,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
     }
 
     public BMecanumDrive(HardwareMap hardwareMap) {
-        this(hardwareMap, 2);
+        this(hardwareMap, 0.25);
     }
 
     public BMecanumDrive(HardwareMap hardwareMap, double timeout) {

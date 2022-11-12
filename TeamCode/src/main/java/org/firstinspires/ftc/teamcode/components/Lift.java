@@ -36,8 +36,8 @@ public class Lift implements Component {
     //private double F = 0.3/34000;    // @ 13V resting (12.8V under load)
     private double F = 0;    // @ 13V resting (12.8V under load)
     private double vF = F;            // Voltage adjusted F (use battery reading to help here)
-    private double MAX_LIFT_UP_PWR = 0.95 ;
-    public double MIN_LIFT_UP_PWR = 0.01 ;
+    private static double MAX_LIFT_UP_PWR = 0.95 ;
+    public static double MIN_LIFT_UP_PWR = 0.01 ;
 
     private NanoClock PIDClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
     private NanoClock DownClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
@@ -56,7 +56,7 @@ public class Lift implements Component {
     public MiniPID pid = new MiniPID(P,I,D,F);                // Create the PID
 
     public enum Goal {
-        OPEN_LOOP, UP, DOWN
+        OPEN_LOOP, UP, DOWN, MANUAL
     }
 
     public enum Mode {
@@ -64,7 +64,7 @@ public class Lift implements Component {
     }
 
     //private static final double HOLD_LIFT_POWER = 0.15;
-    private int currentPosition;
+    //private int currentPosition;
     private final double heightScale = 38.0/61.0;
     private final int restPosition = (int)(200.0 / heightScale);
     private final int junctionPosition = (int)(2000.0 / heightScale);
@@ -83,8 +83,8 @@ public class Lift implements Component {
     private final DcMotor br;
 
     //TODO: adjust these values maybe
-    private TimerCanceller resetLiftTimerCanceller = new TimerCanceller(750);
-    private TimerCanceller extendLiftTimerCanceller = new TimerCanceller(500);
+    //private static TimerCanceller resetLiftTimerCanceller = new TimerCanceller(750);
+    //private static TimerCanceller extendLiftTimerCanceller = new TimerCanceller(500);
 
     private Goal goal = Goal.OPEN_LOOP;
     private Goal prevGoal = Goal.OPEN_LOOP;
@@ -116,17 +116,48 @@ public class Lift implements Component {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         pid.reset();                                       // Out PID keeps state, clear it all out
-        pid.setOutputLimits(0.0,MAX_LIFT_UP_PWR);          // Make sure we don't exceed some maximum rating
+        pid.setOutputLimits(0.0, MAX_LIFT_UP_PWR);          // Make sure we don't exceed some maximum rating
         vF = F;
-        pid.setPID(P,I,D,vF);                              // Set out params
+        pid.setPID(P, I, D, vF);                              // Set out params
+    }
+
+    public void zeroLift() {
+        Goal goal = getGoal();
+
+        setGoal(Goal.MANUAL);
+        setMotorPowers(-0.4);
+
+        NanoClock clock = NanoClock.system();
+        double now;
+
+        now = clock.seconds();
+        while (clock.seconds() < (now + 1) ) { }
+
+        setMotorPowers(0.0);
+
+        now = clock.seconds();
+        while (clock.seconds() < (now + 0.500) ) { }
+
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        setGoal(goal);
     }
 
     @Override
     public void initAuto() {
+        zeroLift();
     }
 
     @Override
     public void initTeleOp() {
+        // zeroLift();
     }
 
     @Override
@@ -185,8 +216,8 @@ public class Lift implements Component {
     public void setGoal(Goal goal) {
         if (this.goal != goal) {
             this.goal = goal;
-            resetLiftTimerCanceller.reset();
-            extendLiftTimerCanceller.reset();
+            //resetLiftTimerCanceller.reset();
+            //extendLiftTimerCanceller.reset();
         }
     }
 
@@ -206,6 +237,10 @@ public class Lift implements Component {
         String failures = "";
 
         return failures;
+    }
+
+    public void setMotorPowers(double pwr){
+        setMotorPowers(pwr,pwr,pwr,pwr);
     }
 
     public void setMotorPowers(double vFL, double vFR, double vBL, double vBR) {
@@ -295,10 +330,13 @@ public class Lift implements Component {
     public void updateLiftPID() {
         double now = PIDClock.seconds() ;
         double curPos;
-        //double pwr;
 
         // If enough time has passed
         if ( nextPID < now ) {
+            // Get out if we are in manual control
+            if(goal == Goal.MANUAL){
+                return;
+            }
 
             // And we are supposed to be powered
             // Make a different way to request lift stop
@@ -322,7 +360,7 @@ public class Lift implements Component {
 
                 // Set the power
                 pwr = Range.clip(pwr, -MAX_LIFT_UP_PWR, MAX_LIFT_UP_PWR);
-                setMotorPowers(pwr,pwr,pwr,pwr);
+                setMotorPowers(pwr);
 
                 prevPIDTime = now;
 
@@ -330,7 +368,7 @@ public class Lift implements Component {
                 nextPID = now + PIDTime;
                 lastPIDTime = now;
             } else {
-                setMotorPowers(0.0,0.0,0.0,0.0);
+                setMotorPowers(0.0);
                 // 'Schedule' the next PID check
                 // Maybe we should just be turning the PID off now?
                 nextPID = now + PIDTime;

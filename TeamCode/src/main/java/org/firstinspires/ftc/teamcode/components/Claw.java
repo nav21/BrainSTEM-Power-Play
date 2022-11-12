@@ -43,19 +43,17 @@ public class Claw implements Component {
     private TimerCanceller returnMidFlipCanceller = new TimerCanceller(250);
 
     public Claw(HardwareMap map) {
-        clawServoRight = map.get(ServoImplEx.class,"clawServoRight");
-        clawServoLeft = map.get(ServoImplEx.class,"clawServoLeft");
-        leftFlipServo = map.get(ServoImplEx.class,"leftFlipServo");
-        rightFlipServo = map.get(ServoImplEx.class,"rightFlipServo");
+        clawServoRight = map.get(ServoImplEx.class, "clawServoRight");
+        clawServoLeft = map.get(ServoImplEx.class, "clawServoLeft");
+        leftFlipServo = map.get(ServoImplEx.class, "leftFlipServo");
+        rightFlipServo = map.get(ServoImplEx.class, "rightFlipServo");
         timedLeftFlipServo = new TimedServo(leftFlipServo);
         timedRightFlipServo = new TimedServo(rightFlipServo);
 
         currentGoal = Goal.OPEN_LOOP;
     }
 
-    @Override
-    public void initAuto()
-    {
+    public void initClaw(){
         NanoClock clock = NanoClock.system();
         double now;
 
@@ -78,21 +76,22 @@ public class Claw implements Component {
             timedLeftFlipServo.update();
             timedRightFlipServo.update();
         }
+    }
 
+    @Override
+    public void initAuto() {
+        initClaw();
         setClawServoPosition(ClawPosition.CLOSED);
     }
 
     @Override
     public void initTeleOp() {
-        setClawServoPosition(ClawPosition.OPEN);
-        leftFlipServo.setPosition(collectLeft);
-        rightFlipServo.setPosition(collectRight);
-        curFlipPosition = FlipPosition.COLLECT;
+        // initClaw();
+        // setClawServoPosition(ClawPosition.OPEN);
     }
 
     @Override
     public void updateComponent() {
-        //timedRightFlipServo.update();
         timedLeftFlipServo.update();
         timedRightFlipServo.update();
         switch (currentGoal) {

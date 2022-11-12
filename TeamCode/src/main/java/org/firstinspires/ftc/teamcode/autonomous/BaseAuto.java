@@ -25,6 +25,9 @@ public abstract class BaseAuto extends LinearOpMode {
     public double xModifier = 0.0;
     public double yModifier = 0.0;
 
+    private SignalSleevePosition signalSleevePosition = SignalSleevePosition.TWO;
+
+
     @Override
     public void runOpMode() {
         PhotonCore.enable();
@@ -47,6 +50,7 @@ public abstract class BaseAuto extends LinearOpMode {
         telemetry.update();
         robot.initAuto();
 
+        showTelemetry();
 
         goStickyButton.update(gamepad1.a);
         while (goStickyButton.getState()==false) {
@@ -80,7 +84,6 @@ public abstract class BaseAuto extends LinearOpMode {
         telemetry.update();
         visionLibrary.init();
 
-        SignalSleevePosition signalSleevePosition = SignalSleevePosition.TWO;
         SignalSleevePosition signalSleevePositionTemp;
 
         while (!opModeIsActive() && !isStopRequested()) {
@@ -90,9 +93,7 @@ public abstract class BaseAuto extends LinearOpMode {
                 signalSleevePosition =  signalSleevePositionTemp;
             }
 
-            telemetry.addData("Status", "Waiting...");
-            telemetry.addData("Signal Pos", signalSleevePosition);
-            telemetry.update();
+            showTelemetry();
         }
 
         visionLibrary.stopVision();
@@ -104,6 +105,23 @@ public abstract class BaseAuto extends LinearOpMode {
         if(useThreads) {
             robot.stop();
         }
+    }
+
+    public void showTelemetry() {
+        //telemetry.addData("clawToggleHits: ", clawToggleHits);
+        telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
+        telemetry.addData("Lift Mode", robot.lift.getMode());
+        telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
+        telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
+        telemetry.addData("Lift pwr: ", robot.lift.pwr);
+        telemetry.addData("Min pwr: ", robot.lift.pid.getOutputMin());
+        telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
+
+        telemetry.addLine("");
+        telemetry.addData("Status", "Waiting...");
+        telemetry.addData("Signal Pos", signalSleevePosition);
+
+        telemetry.update();
     }
 
     public abstract void buildPaths(AutoBrainSTEMRobot robot);
@@ -138,15 +156,7 @@ public abstract class BaseAuto extends LinearOpMode {
             // Get the time
             now = localClock.seconds();
 
-            //telemetry.addData("clawToggleHits: ", clawToggleHits);
-            telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
-            telemetry.addData("Lift Mode", robot.lift.getMode());
-            telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
-            telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
-            telemetry.addData("Lift pwr: ", robot.lift.pwr);
-            telemetry.addData("Min pwr: ", robot.lift.pid.getOutputMin());
-            telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
-            telemetry.update();
+            showTelemetry();
 
             // Master stop
             if (!opModeIsActive()) {

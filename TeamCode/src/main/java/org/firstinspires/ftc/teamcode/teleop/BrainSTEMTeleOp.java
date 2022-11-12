@@ -31,6 +31,8 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
     private StickyButton clawIncStickyButton = new StickyButton();
     private StickyButton clawDecStickyButton = new StickyButton();
+
+    private StickyButton zeroLiftStickyButton = new StickyButton();
     ////////////
     //DRIVER 1//
     ////////////
@@ -69,6 +71,8 @@ public class BrainSTEMTeleOp extends LinearOpMode {
     private int heightToggleHits=7;
 
     private void mapControls(BrainSTEMRobot robot) {
+        zeroLiftStickyButton.update(gamepad1.dpad_down);
+
         if( robot.claw.isSafeToChangeClawGoal()) {
             clawIncStickyButton.update(gamepad1.a);
             clawToggleHits += clawIncStickyButton.getState() ? 1 : 0;
@@ -116,9 +120,19 @@ public class BrainSTEMTeleOp extends LinearOpMode {
             telemetry.update();
         }
 
+        // Hardcode some init here
+        robot.claw.initClaw();
+        robot.claw.setClawServoPosition(ClawPosition.OPEN);
+        robot.lift.zeroLift();
+
         runtime.reset();
         while (opModeIsActive()) {
             mapControls(robot);
+
+            if( zeroLiftStickyButton.getState()) {
+                robot.drive.setMotorPowers(0,0,0,0);
+                robot.lift.zeroLift();
+            }
 
             // This is a 'better' way to do the smooth drive where we push everything into a class
             sd.update(Math.toDegrees(robot.drive.getRawExternalHeading()));
@@ -126,7 +140,7 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
             if(moveLiftUp) {
                 robot.lift.setGoal(Lift.Goal.UP);
-                telemetry.addLine("Running Motaaor: Front Left");
+                telemetry.addLine("Running Motor: Front Left");
             } else if(moveLiftDown) {
                 robot.lift.setGoal(Lift.Goal.DOWN);
                 telemetry.addLine("Running a: Rear Left");

@@ -21,9 +21,11 @@ import org.firstinspires.ftc.teamcode.components.Lift;
 public class visionLeft_2 extends BaseAuto {
     private Trajectory goToMedGoalPosition ;
     private Trajectory depositPreloadMedGoal;
-    Trajectory goToFirstCone1;
-    Trajectory goToFirstCone2;
-    Trajectory goToFirstCone3;
+    private Trajectory goToFirstCone1;
+    private Trajectory goToFirstCone2;
+    private Trajectory goToFirstCone3;
+    private Trajectory goDepositLow1;
+    private Trajectory goReturnToCone1;
     private Trajectory strafeForPark;
     private Trajectory park1;
     private Trajectory park3;
@@ -71,7 +73,18 @@ public class visionLeft_2 extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
-        strafeForPark = robot.drive.trajectoryBuilder(goToFirstCone1.end()) // TODO change this end trajectoy
+        goDepositLow1 = robot.drive.trajectoryBuilder(goToFirstCone3.end())
+                .lineToSplineHeading(new Pose2d(-56, d*17, Math.toRadians(d*225)), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.LOW))
+                .addTemporalMarker(0.6, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
+                .build();
+        goReturnToCone1 = robot.drive.trajectoryBuilder(goDepositLow1.end())
+                .lineToSplineHeading(new Pose2d(-64, d*14, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
+                .addTemporalMarker(0.2, () -> robot.lift.setMode(Lift.Mode.CONE_4))
+                .build();        strafeForPark = robot.drive.trajectoryBuilder(goToFirstCone1.end()) // TODO change this end trajectoy
                 .lineToConstantHeading(new Vector2d(-37, d*36), BMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -128,9 +141,30 @@ public class visionLeft_2 extends BaseAuto {
         CheckWait(750);
 
         robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
-        robot.drive.followTrajectoryAsync(strafeForPark);
         CheckWait(0);         // FollowTrajectory
-        CheckWait(1000);
+        CheckWait(700);
+
+        robot.drive.followTrajectoryAsync(goDepositLow1);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(750);
+
+        robot.claw.setCurrentGoal(Claw.Goal.RELEASE);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(350);
+
+        robot.claw.setCurrentGoal(Claw.Goal.RETURN_MID);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(350);
+
+        robot.drive.followTrajectoryAsync(goReturnToCone1);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(750);
+
+        robot.drive.followTrajectoryAsync(goDepositLow1);
+        CheckWait(0);         // FollowTrajectory
+        CheckWait(750);
+
+
 
         if (signalSleevePosition == SignalSleevePosition.ONE) {
             robot.drive.followTrajectoryAsync(park1);

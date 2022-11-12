@@ -219,7 +219,9 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         turnAsync(angle);
         waitForIdle();
     }
+    public void getEncoderPositions (){
 
+    }
     public void followTrajectoryAsync(Trajectory trajectory) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
                 trajectorySequenceBuilder(trajectory.start())

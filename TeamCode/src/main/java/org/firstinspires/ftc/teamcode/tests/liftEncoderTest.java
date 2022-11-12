@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.autonomous.enums.LiftPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
 
-@Disabled
 @TeleOp
 public class liftEncoderTest extends LinearOpMode {
 
@@ -44,7 +43,7 @@ public class liftEncoderTest extends LinearOpMode {
             telemetry.addData("Deposit Mode", MOTOR_TICK_COUNT);
             telemetry.addData("Deposit 2", MOTOR_TICK_COUNT2);
 
-            telemetry.addData("Deposit 3", MOTOR_TICK_COUNT3);
+            telemetry.addData("Deposit 3", robot.drive.getWheelPositions());
 
             telemetry.update();
         }

@@ -53,7 +53,7 @@ public abstract class BaseAuto extends LinearOpMode {
         showTelemetry();
 
         goStickyButton.update(gamepad1.a);
-        while (goStickyButton.getState()==false) {
+        while ((goStickyButton.getState()==false) && !opModeIsActive() && !isStopRequested()) {
             if (isStopRequested()) return;
             awayStickyButton.update(gamepad1.dpad_up);
             yModifier += awayStickyButton.getState() ? 0.5 : 0.0;
@@ -75,6 +75,8 @@ public abstract class BaseAuto extends LinearOpMode {
 
             goStickyButton.update(gamepad1.a);
         }
+
+        if (isStopRequested()) return;
 
         telemetry.addLine("Building paths");
         telemetry.update();

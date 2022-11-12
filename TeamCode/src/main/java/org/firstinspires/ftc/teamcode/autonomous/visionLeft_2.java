@@ -104,7 +104,7 @@ public class visionLeft_2 extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         parkA = robot.drive.trajectoryBuilder(getInPositionForPark2.end())
-                .lineTo(new Vector2d(-14, d*38), BMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(-12, d*38), BMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         parkB = robot.drive.trajectoryBuilder(getInPositionForPark2.end())

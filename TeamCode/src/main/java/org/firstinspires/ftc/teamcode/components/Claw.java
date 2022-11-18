@@ -194,11 +194,11 @@ public class Claw implements Component {
                     clawServoRight.setPosition(0.15);   // Smaller number is more closed
                     clawServoLeft.setPosition(0.79);    // Larger number is more closed
                     break;
-                case INIT:
                 case RELEASE:
                     clawServoRight.setPosition(0.22);
                     clawServoLeft.setPosition(0.76);
                     break;
+                case INIT:
                 case OPEN:
                     clawServoRight.setPosition(0.30);
                     clawServoLeft.setPosition(0.66);

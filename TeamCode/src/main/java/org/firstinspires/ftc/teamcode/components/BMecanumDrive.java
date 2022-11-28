@@ -65,7 +65,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
 
     // TODO
     //public static double LATERAL_MULTIPLIER = 1.68;
-    public static double LATERAL_MULTIPLIER = 1.15;
+    public static double LATERAL_MULTIPLIER = 1.161;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -161,6 +161,8 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         leftRear.setDirection(DcMotor.Direction.REVERSE);
 
         // TODO: if desired, use setLocalizer() to change the localization method
+        //
+        //
         // setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);

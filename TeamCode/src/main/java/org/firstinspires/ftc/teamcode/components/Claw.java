@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.Component;
 
 public class Claw implements Component {
     public enum Goal {
-        OPEN_LOOP,  COLLECT_MID, RETURN_MID, RESET, RELEASE, FLIP
+        OPEN_LOOP,  COLLECT_MID, RETURN_MID, RESET, RELEASE, FLIP, COLLECT, DEPOSIT, DEPOSIT_2, DEPOSIT_3,DEPOSIT_4,DEPOSIT_5, DEPOSIT_6, COLLECT_25,
     }
 
     private final ServoImplEx clawServoRight;
@@ -26,10 +26,12 @@ public class Claw implements Component {
     private FlipPosition curFlipPosition = FlipPosition.UNKNOWN;
     private ClawPosition curClawPosition = ClawPosition.UNKNOWN;
 
-    private final double depositLeft=1.0;
+    private final double depositLeft=0.98; // 1
     private final double midLeft= 0.6;
     private final double initLeft=0.4;
-    private final double collectLeft=0.197;
+    private final double collectLeft=0.203;//0.197
+    private final double partwayLeft= 0.4;
+    private final double partwayRight = 1.0 - partwayLeft;
     private final double depositRight= 1.0 - depositLeft;
     private final double midRight= 1.0 - midLeft;
     private final double initRight= 1.0 - initLeft;
@@ -37,10 +39,24 @@ public class Claw implements Component {
 
     private Goal currentGoal;
 
+    private TimerCanceller closeV4BCanceller = new TimerCanceller(1);
     private TimerCanceller flipUpCanceller = new TimerCanceller(300);
+    private TimerCanceller flipUpCanceller2 = new TimerCanceller(300);
     private TimerCanceller clawOpenCanceller = new TimerCanceller(200);
+    private TimerCanceller openClawCanceller = new TimerCanceller(1000);
     private TimerCanceller depositorStateCanceller = new TimerCanceller(2000);
     private TimerCanceller returnMidFlipCanceller = new TimerCanceller(250);
+    private TimerCanceller autoFlipUpCanceller = new TimerCanceller(300);
+    private TimerCanceller autoReleaseCanceller = new TimerCanceller(300);
+    private TimerCanceller disableServoCanceller = new TimerCanceller((700*(1.0/3.0))*1.10);
+    private TimerCanceller disableServoCanceller2 = new TimerCanceller(700);
+    private TimerCanceller dropDelayCanceller = new TimerCanceller(350);
+    private TimerCanceller closeDelayCanceller = new TimerCanceller(200);
+    private TimerCanceller openClawCanceller2 = new TimerCanceller(700*(2.0/3.0));
+
+
+
+
 
     public Claw(HardwareMap map) {
         clawServoRight = map.get(ServoImplEx.class, "clawServoRight");
@@ -121,6 +137,58 @@ public class Claw implements Component {
                 }
                 setFlipServoPosition(FlipPosition.COLLECT);
                 break;
+                //TODO NEW CODE
+            case COLLECT_25:
+                if(autoFlipUpCanceller.isConditionMet()) {
+                    enableFlipServo();
+                    setFlipServoPosition(FlipPosition.PARTWAY25);
+
+                }
+                setClawServoPosition(ClawPosition.CLOSED);
+
+                break;
+            case DEPOSIT:
+                setClawServoPosition(ClawPosition.OPEN);
+                dropDelayCanceller.reset();
+                setCurrentGoal(Goal.DEPOSIT_2);
+                break;
+            case DEPOSIT_2:
+                if(dropDelayCanceller.isConditionMet()){
+                    setClawServoPosition(ClawPosition.CLOSED);
+                    closeDelayCanceller.reset();
+                    setCurrentGoal(Goal.DEPOSIT_3);
+                }
+                break;
+            case DEPOSIT_3:
+                if(closeDelayCanceller.isConditionMet()){
+                    enableFlipServo();
+                    openClawCanceller2.reset();
+                    setFlipServoPosition(FlipPosition.COLLECT);
+                    setCurrentGoal(Goal.DEPOSIT_4);
+                }
+                break;
+            case DEPOSIT_4:
+                if(openClawCanceller2.isConditionMet()){
+                    setClawServoPosition(ClawPosition.OPEN);
+                    disableServoCanceller.reset();
+                    setCurrentGoal(Goal.DEPOSIT_5);
+                }
+                break;
+            case DEPOSIT_5:
+                if(disableServoCanceller.isConditionMet()){
+                    disableFlipServo();
+                    setCurrentGoal(Goal.DEPOSIT_6);
+                }
+                break;
+            case DEPOSIT_6:
+                break;
+            case COLLECT:
+                if(disableServoCanceller2.isConditionMet()) {
+                    disableFlipServo();
+                }
+                    setFlipServoPosition(FlipPosition.DEPOSIT);
+
+                break;
         }
     }
 
@@ -137,10 +205,15 @@ public class Claw implements Component {
     public void setCurrentGoal(Goal currentGoal) {
         if (this.currentGoal != currentGoal) {
             this.currentGoal = currentGoal;
-
+            autoFlipUpCanceller.reset();
+            autoReleaseCanceller.reset();
             flipUpCanceller.reset();
+            flipUpCanceller2.reset();
             clawOpenCanceller.reset();
+            openClawCanceller.reset();
             returnMidFlipCanceller.reset();
+            disableServoCanceller.reset();
+            disableServoCanceller2.reset();
             switch (currentGoal) {
                 case OPEN_LOOP:
                     depositorStateCanceller.reset(1);
@@ -159,6 +232,15 @@ public class Claw implements Component {
                     break;
                 case RESET:
                     depositorStateCanceller.reset(500);
+                    break;
+                case COLLECT_25:
+                    depositorStateCanceller.reset(250);
+                    break;
+                case DEPOSIT:
+                    depositorStateCanceller.reset(250);
+                    break;
+                case COLLECT:
+                    depositorStateCanceller.reset(250);
                     break;
                 default:
                     depositorStateCanceller.reset(2000);
@@ -184,6 +266,15 @@ public class Claw implements Component {
     }
     public void setRightFlipPosition(double position) {
         rightFlipServo.setPosition(position);
+    }
+
+    public void disableFlipServo() {
+        rightFlipServo.setPwmDisable();
+        leftFlipServo.setPwmDisable();
+    }
+    public void enableFlipServo() {
+        rightFlipServo.setPwmEnable();
+        leftFlipServo.setPwmEnable();
     }
 
     //TODO: FIX THESE VALUES
@@ -232,6 +323,14 @@ public class Claw implements Component {
                     timedLeftFlipServo.setTimedPosition(depositLeft, 700);
                     timedRightFlipServo.setTimedPosition(depositRight, 700);
                 }
+                else if(curFlipPosition == FlipPosition.PARTWAY25) {
+                    timedLeftFlipServo.setTimedPosition(depositLeft, 650);
+                    timedRightFlipServo.setTimedPosition(depositRight, 650);
+                }
+                break;
+            case PARTWAY25:
+                    timedLeftFlipServo.setTimedPosition(partwayLeft, 100);
+                    timedRightFlipServo.setTimedPosition(partwayRight, 100);
                 break;
         }
         curFlipPosition = position;

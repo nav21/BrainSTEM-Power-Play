@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.autonomous.enums.ClawPosition;
 import org.firstinspires.ftc.teamcode.autonomous.enums.FlipPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
+import org.firstinspires.ftc.teamcode.buttons.ToggleButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
 
-@Disabled
 @TeleOp
 public class ServoArmTest extends LinearOpMode {
     private StickyButton backward = new StickyButton();
-    private StickyButton forward = new StickyButton();
+    private ToggleButton armToggle = new ToggleButton();
 
 
 
@@ -45,19 +45,17 @@ public class ServoArmTest extends LinearOpMode {
     private boolean collectorFlipServoDeposit;
     private boolean collectorFlipServoCollect;
     private boolean collectorFlipServoMid;
-    private boolean collectorClawServoOpen;
+    private boolean togglePwm;
     private boolean collectorClawServoClosed;
     private boolean collectorClawServoRelease;
     private static double position = 0.2;
 
 
     private void mapControls() {
-        collectorClawServoOpen = gamepad1.y;
-        collectorClawServoClosed = gamepad1.x;
-        collectorClawServoRelease = gamepad1.left_bumper;
+        togglePwm = armToggle.update(gamepad1.y);
         collectorFlipServoCollect = gamepad1.a;
         collectorFlipServoDeposit = gamepad1.b;
-        collectorFlipServoMid = gamepad1.right_bumper;
+        collectorFlipServoMid = gamepad1.x;
     }
 
     @Override
@@ -92,18 +90,13 @@ public class ServoArmTest extends LinearOpMode {
                 prevState = FlipPosition.MID ;
                 telemetry.addData("Status", "Mid");
             }
-            if (collectorClawServoOpen){
-                robot.claw.setClawServoPosition(ClawPosition.OPEN);
-                telemetry.addData("Status", "Open");
+            if (togglePwm) {
+                robot.claw.disableFlipServo();
             }
-            if (collectorClawServoClosed){
-                robot.claw.setClawServoPosition(ClawPosition.CLOSED);
-                telemetry.addData("Status", "Closed");
+            else {
+                robot.claw.enableFlipServo();
             }
-            if (collectorClawServoRelease){
-                robot.claw.setClawServoPosition(ClawPosition.RELEASE);
-                telemetry.addData("Status", "Release");
-            }
+
 
             robot.claw.updateComponent();
             telemetry.addData("Left", robot.claw.getLeftClawPosition());

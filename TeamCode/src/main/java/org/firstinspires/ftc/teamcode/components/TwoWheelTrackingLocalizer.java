@@ -85,7 +85,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
-                encoderTicksToInches(parallelEncoder.getCurrentPosition()) * 1.0104092401229404704516055546744,
+                encoderTicksToInches(parallelEncoder.getCurrentPosition()) * 1.01,
                 encoderTicksToInches(perpendicularEncoder.getCurrentPosition()) * 1.0038
         );
     }
@@ -98,7 +98,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(parallelEncoder.getCorrectedVelocity())  * 1.0104092401229404704516055546744,
+                encoderTicksToInches(parallelEncoder.getCorrectedVelocity())  * 1.01,
                 encoderTicksToInches(perpendicularEncoder.getCorrectedVelocity()) * 1.0038
         );
     }

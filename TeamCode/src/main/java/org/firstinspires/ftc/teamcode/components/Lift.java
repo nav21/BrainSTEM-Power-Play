@@ -315,7 +315,7 @@ public class Lift implements Component {
             nextPID = PIDStartTime;
             pid.reset();
 
-            if( getGoal() == Goal.UP ) {
+            if(getGoal() == Goal.UP ) {
                 pid.setOutputLimits(MIN_LIFT_UP_PWR, MAX_LIFT_UP_PWR);
             } else {
                 // These controls

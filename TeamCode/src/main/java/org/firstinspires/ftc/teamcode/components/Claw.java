@@ -277,6 +277,14 @@ public class Claw implements Component {
         leftFlipServo.setPwmEnable();
     }
 
+    public void setLeftClawPosition(double position) {
+        clawServoLeft.setPosition(position);
+    }
+
+    public void setRightClawPosition(double position) {
+        clawServoRight.setPosition(position);
+    }
+
     //TODO: FIX THESE VALUES
     public void setClawServoPosition(ClawPosition position) {
         if (curClawPosition != position) {

@@ -32,7 +32,6 @@ public class Lift implements Component {
     //private double I = 0;
     //private double D = 0;                     // derivative scaling
 
-
     //private double F = 0.3/34000;    // @ 13V resting (12.8V under load)
     private double F = 0;    // @ 13V resting (12.8V under load)
     private double vF = F;            // Voltage adjusted F (use battery reading to help here)
@@ -40,8 +39,7 @@ public class Lift implements Component {
     public static double MIN_LIFT_UP_PWR = 0.01 ;
 
     private NanoClock PIDClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
-    private NanoClock DownClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
-    private double nextDown = 0.0;
+
     public double tgtPos = -1.0 ;                     // Target
     public double pidTgtPos = -1.0 ;                     // Target
     public double PIDTime = 0.025;                     // Ideal/minimum interval
@@ -65,17 +63,21 @@ public class Lift implements Component {
 
     //private static final double HOLD_LIFT_POWER = 0.15;
     //private int currentPosition;
-    private final double heightScale = 38.0/61.0;
-    private final int restPosition = (int)(200.0 / heightScale);
-    private final int junctionPosition = (int)(2000.0 / heightScale);
-    private final int lowPosition = (int)((16000.0 / heightScale)+1000);
-    private final int medPosition = (int)((27500.0 / heightScale)+400);
-    private final int highPosition = (int)((38000.0 / heightScale)+1000);
+    //private final double heightScale = 38.0/61.0;  // 1/1.6053
+    private final int restPosition = (int)(240);
+    private final int junctionPosition = (int)(3210);
+    private final int lowPosition = (int)(26684);
+    private final int medPosition = (int)(44545);
+    private final int highPosition = (int)(62000);
 
-    private final int cone5 = restPosition+(2025*4);
-    private final int cone4 = restPosition+(2025*3);
-    private final int cone3 = restPosition+(2025*2);
-    private final int cone2 = restPosition+(2025*1);
+    private final int cone5 = 20+(2025*4);
+    private final int cone4 = 20+(2025*3);
+    private final int cone3 = 20+(2025*2);
+    private final int cone2 = 20+(2025*1);
+
+    private NanoClock DownClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
+    private double prevDownTime = 0.0;
+    private double downRate = (1605.0/0.020);  // 1605 ticks / 20 ms
 
     private final DcMotor fl;
     private final DcMotor fr;
@@ -164,21 +166,21 @@ public class Lift implements Component {
     public void updateComponent() {
         double now = DownClock.seconds();
         double curPos = getLiftEncoderTicks();
+        double downAmount = 0.0 ;
 
         if(tgtPos >= curPos) {
             pidTgtPos = tgtPos;
             pid.setOutputLimits(MIN_LIFT_UP_PWR, MAX_LIFT_UP_PWR);
         } else {
-            if (nextDown < now) {
-                pidTgtPos = Math.max(tgtPos, curPos - (1000.0 / heightScale));
-                nextDown = now + 0.03;
-                if (curPos < 25000) {
-                    pid.setOutputLimits(-0.45, MAX_LIFT_UP_PWR);
-                } else if (curPos < 55000) {
-                    pid.setOutputLimits(-0.04, MAX_LIFT_UP_PWR);
-                } else {
-                    pid.setOutputLimits(0.0, MAX_LIFT_UP_PWR);
-                }
+            // Target a down amount of 1000 ticks per 30ms
+            downAmount = (now-prevDownTime) * downRate;
+            pidTgtPos = Math.max(tgtPos, curPos - downAmount);
+            if (curPos < 25000) {
+                pid.setOutputLimits(-0.45, MAX_LIFT_UP_PWR);
+            } else if (curPos < 55000) {
+                pid.setOutputLimits(-0.04, MAX_LIFT_UP_PWR);
+            } else {
+                pid.setOutputLimits(0.0, MAX_LIFT_UP_PWR);
             }
         }
         updateLiftPID();

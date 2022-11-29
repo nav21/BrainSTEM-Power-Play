@@ -151,6 +151,7 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
                     robot.claw.setCurrentGoal(Claw.Goal.COLLECT);
                     break;
                 case 3:
+
                     robot.claw.setCurrentGoal(Claw.Goal.DEPOSIT);
                     clawToggleHits = 0;
                     break;
@@ -196,6 +197,7 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
             telemetry.addData("Lift pwr: ", robot.lift.pwr);
             telemetry.addData("Min pwr: ", robot.lift.pid.getOutputMin());
             telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
+            telemetry.addData("Prev Claw Goal Collect_25: ", robot.claw.getPrevGoalCollect25());
             telemetry.update();
         }
     }

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.Component;
 
 public class Claw implements Component {
     public enum Goal {
-        OPEN_LOOP,  COLLECT_MID, RETURN_MID, RESET, RELEASE, FLIP, COLLECT, DEPOSIT, DEPOSIT_2, DEPOSIT_3,DEPOSIT_4,DEPOSIT_5, DEPOSIT_6, COLLECT_25,
+        OPEN_LOOP,  COLLECT_MID, RETURN_MID, RESET, RELEASE, FLIP, COLLECT, DEPOSIT, DEPOSIT_2, DEPOSIT_3,DEPOSIT_4,DEPOSIT_5, DEPOSIT_6, COLLECT_25, RETURN_SPECIAL
     }
 
     private final ServoImplEx clawServoRight;
@@ -38,6 +38,7 @@ public class Claw implements Component {
     private final double collectRight= 1.0 - collectLeft;
 
     private Goal currentGoal;
+    private boolean lastGoalCollect25 = false;
 
     private TimerCanceller closeV4BCanceller = new TimerCanceller(1);
     private TimerCanceller flipUpCanceller = new TimerCanceller(300);
@@ -46,13 +47,17 @@ public class Claw implements Component {
     private TimerCanceller openClawCanceller = new TimerCanceller(1000);
     private TimerCanceller depositorStateCanceller = new TimerCanceller(2000);
     private TimerCanceller returnMidFlipCanceller = new TimerCanceller(250);
-    private TimerCanceller autoFlipUpCanceller = new TimerCanceller(300);
+    private TimerCanceller autoFlipUpCanceller = new TimerCanceller(400);
     private TimerCanceller autoReleaseCanceller = new TimerCanceller(300);
-    private TimerCanceller disableServoCanceller = new TimerCanceller((700*(1.0/3.0))*1.10);
+    private TimerCanceller disableServoCanceller = new TimerCanceller((700*(1.0/3.0)));
     private TimerCanceller disableServoCanceller2 = new TimerCanceller(700);
     private TimerCanceller dropDelayCanceller = new TimerCanceller(350);
     private TimerCanceller closeDelayCanceller = new TimerCanceller(200);
     private TimerCanceller openClawCanceller2 = new TimerCanceller(700*(2.0/3.0));
+    private TimerCanceller specialDisableFlipCanceller = new TimerCanceller(210);
+    private TimerCanceller funnyDisableCollectFlipCanceller = new TimerCanceller(1150);
+
+
 
 
 
@@ -137,7 +142,7 @@ public class Claw implements Component {
                 }
                 setFlipServoPosition(FlipPosition.COLLECT);
                 break;
-                //TODO NEW CODE
+            //TODO NEW CODE
             case COLLECT_25:
                 if(autoFlipUpCanceller.isConditionMet()) {
                     enableFlipServo();
@@ -145,12 +150,20 @@ public class Claw implements Component {
 
                 }
                 setClawServoPosition(ClawPosition.CLOSED);
-
+                lastGoalCollect25 = true;
                 break;
             case DEPOSIT:
-                setClawServoPosition(ClawPosition.OPEN);
-                dropDelayCanceller.reset();
-                setCurrentGoal(Goal.DEPOSIT_2);
+                if (lastGoalCollect25) {
+                    if(specialDisableFlipCanceller.isConditionMet()) {
+                        disableFlipServo();
+                    }
+                    setClawServoPosition(ClawPosition.OPEN);
+                    setFlipServoPosition(FlipPosition.COLLECT);
+                } else {
+                    setClawServoPosition(ClawPosition.OPEN);
+                    dropDelayCanceller.reset();
+                    setCurrentGoal(Goal.DEPOSIT_2);
+                }
                 break;
             case DEPOSIT_2:
                 if(dropDelayCanceller.isConditionMet()){
@@ -186,8 +199,10 @@ public class Claw implements Component {
                 if(disableServoCanceller2.isConditionMet()) {
                     disableFlipServo();
                 }
-                    setFlipServoPosition(FlipPosition.DEPOSIT);
-
+                setFlipServoPosition(FlipPosition.DEPOSIT);
+                lastGoalCollect25 = false;
+                break;
+            case RETURN_SPECIAL:
                 break;
         }
     }
@@ -214,6 +229,8 @@ public class Claw implements Component {
             returnMidFlipCanceller.reset();
             disableServoCanceller.reset();
             disableServoCanceller2.reset();
+            specialDisableFlipCanceller.reset();
+            funnyDisableCollectFlipCanceller.reset();
             switch (currentGoal) {
                 case OPEN_LOOP:
                     depositorStateCanceller.reset(1);
@@ -243,7 +260,7 @@ public class Claw implements Component {
                     depositorStateCanceller.reset(250);
                     break;
                 default:
-                    depositorStateCanceller.reset(2000);
+                    depositorStateCanceller.reset(500);
                     break;
             }
         }
@@ -253,12 +270,24 @@ public class Claw implements Component {
         return currentGoal;
     }
 
+    public boolean getPrevGoalCollect25() {
+        return lastGoalCollect25;
+    }
+
+
     public double getRightClawPosition() {
         return(clawServoRight.getPosition());
     }
 
     public double getLeftClawPosition() {
         return(clawServoLeft.getPosition());
+    }
+    public void setRightClawPosition(double position) {
+        clawServoRight.setPosition(position);
+    }
+
+    public void setLeftClawPosition(double position) {
+        clawServoLeft.setPosition(position);
     }
 
     public void setLeftFlipPosition(double position) {
@@ -277,21 +306,16 @@ public class Claw implements Component {
         leftFlipServo.setPwmEnable();
     }
 
-    public void setLeftClawPosition(double position) {
-        clawServoLeft.setPosition(position);
-    }
-
-    public void setRightClawPosition(double position) {
-        clawServoRight.setPosition(position);
-    }
-
     //TODO: FIX THESE VALUES
     public void setClawServoPosition(ClawPosition position) {
         if (curClawPosition != position) {
             switch (position) {
                 case CLOSED:
-                    clawServoRight.setPosition(0.15);   // Smaller number is more closed
-                    clawServoLeft.setPosition(0.79);    // Larger number is more closed
+                  //  clawServoRight.setPosition(0.15);   // Smaller number is more closed
+              //      clawServoLeft.setPosition(0.79);    // Larger number is more closed
+                    clawServoRight.setPosition(0.33);   // TORQUE
+                    clawServoLeft.setPosition(0.72);    // TORQUE
+
                     break;
                 case RELEASE:
                     clawServoRight.setPosition(0.22);
@@ -299,8 +323,10 @@ public class Claw implements Component {
                     break;
                 case INIT:
                 case OPEN:
-                    clawServoRight.setPosition(0.30);
-                    clawServoLeft.setPosition(0.66);
+                 //   clawServoRight.setPosition(0.30);
+               //     clawServoLeft.setPosition(0.66);
+                    clawServoRight.setPosition(0.55);   // TORQUE
+                    clawServoLeft.setPosition(0.47);    // TORQUE
                     break;
             }
             curClawPosition = position;
@@ -315,6 +341,10 @@ public class Claw implements Component {
                 } else if( curFlipPosition == FlipPosition.DEPOSIT) {
                     timedLeftFlipServo.setTimedPosition(collectLeft, 700);
                     timedRightFlipServo.setTimedPosition(collectRight, 700);
+                }
+                else if(curFlipPosition == FlipPosition.PARTWAY25) {
+                    timedLeftFlipServo.setTimedPosition(collectLeft, 200);
+                    timedRightFlipServo.setTimedPosition(collectRight, 200);
                 }
                 break;
             case MID:
@@ -332,13 +362,13 @@ public class Claw implements Component {
                     timedRightFlipServo.setTimedPosition(depositRight, 700);
                 }
                 else if(curFlipPosition == FlipPosition.PARTWAY25) {
-                    timedLeftFlipServo.setTimedPosition(depositLeft, 650);
-                    timedRightFlipServo.setTimedPosition(depositRight, 650);
+                    timedLeftFlipServo.setTimedPosition(depositLeft, 600);
+                    timedRightFlipServo.setTimedPosition(depositRight, 600);
                 }
                 break;
             case PARTWAY25:
-                    timedLeftFlipServo.setTimedPosition(partwayLeft, 100);
-                    timedRightFlipServo.setTimedPosition(partwayRight, 100);
+                timedLeftFlipServo.setTimedPosition(partwayLeft, 100);
+                timedRightFlipServo.setTimedPosition(partwayRight, 100);
                 break;
         }
         curFlipPosition = position;

@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.autonomous.enums.FlipPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.BrainSTEMRobot;
 
-@Disabled
 @TeleOp
 public class ServoClawTest extends LinearOpMode {
     private StickyButton backward = new StickyButton();

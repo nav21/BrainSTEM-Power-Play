@@ -58,7 +58,7 @@ public class Lift implements Component {
     }
 
     public enum Mode {
-        LOW, HIGH, MED, JUNC, INIT, CONE_5, CONE_4, CONE_3, CONE_2,
+        HIGH, MED, LOW, JUNC, REST, CONE_5, CONE_4, CONE_3, CONE_2, INIT
     }
 
     //private static final double HOLD_LIFT_POWER = 0.15;
@@ -70,14 +70,15 @@ public class Lift implements Component {
     private final int medPosition = (int)(44545);
     private final int highPosition = (int)(62000);
 
-    private final int cone5 = 20+(2025*4);
-    private final int cone4 = 20+(2025*3);
-    private final int cone3 = 20+(2025*2);
-    private final int cone2 = 20+(2025*1);
+    private final int cone5 = 20+(2025*4); // 8120
+    private final int cone4 = 20+(2025*3); // 6095
+    private final int cone3 = 20+(2025*2); // 4070
+    private final int cone2 = 20+(2025*1); // 2045
 
     private NanoClock DownClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
     private double prevDownTime = 0.0;
     private double downRate = (1605.0/0.020);  // 1605 ticks / 20 ms
+    private LiftPosition downPosition = LiftPosition.REST ;
 
     private final DcMotor fl;
     private final DcMotor fr;
@@ -92,6 +93,7 @@ public class Lift implements Component {
     private Goal prevGoal = Goal.OPEN_LOOP;
     private Mode mode = Mode.HIGH;
     public double pwr=0.0;
+    private boolean autoStackMode=false;
 
     public Lift(HardwareMap map) {
         fl = map.dcMotor.get("flandperpendicularEncoder");
@@ -152,6 +154,62 @@ public class Lift implements Component {
         setGoal(goal);
     }
 
+    private LiftPosition getNextDown( LiftPosition current ) {
+        LiftPosition next = current ;
+        switch(current) {
+            case CONE_5 :
+                next = LiftPosition.CONE_4;
+                break;
+            case CONE_4 :
+                next = LiftPosition.CONE_3;
+                break;
+            case CONE_3 :
+                next = LiftPosition.CONE_2;
+                break;
+            case CONE_2 :
+                next = LiftPosition.REST;
+                break;
+            case REST :
+                next = LiftPosition.REST;
+                break;
+        }
+        return (next) ;
+    }
+
+    public void autoStackModeButtonPress() {
+        if (autoStackMode) {
+            // If we press button in auto mode
+            if (goal.equals(Goal.DOWN)) {
+                // Pressed while we are DOWN, means advance one position
+                if(downPosition == LiftPosition.REST) {
+                    // If we are at the bottom, then we should just leave auto mode
+                    autoStackMode = false;
+                    runLiftToPosition(downPosition);
+                } else {
+                    // We set the position manually because we're not leaving 'DOWN' goal
+                    runLiftToPosition(downPosition);
+                    downPosition = getNextDown(downPosition);
+                }
+            } else {
+                // Pressed while we're 'UP' -- ignored
+                return;
+            }
+        } else {
+            // If we are not in auto mode, then go to CONE_5 position and Auto mode
+            downPosition = LiftPosition.CONE_5;
+            autoStackMode = true;
+
+            if(goal.equals(Goal.DOWN)) {
+                // If DOWN, then move us manually and then advance
+                runLiftToPosition(downPosition);
+                downPosition = getNextDown(downPosition);
+            } else {
+                // If we were 'UP', switch to DOWN and update routine will move us
+                setGoal(Goal.DOWN);
+            }
+        }
+    }
+
     @Override
     public void initAuto() {
         zeroLift();
@@ -208,7 +266,13 @@ public class Lift implements Component {
                 break;
             case DOWN:
                 if (prevGoal != Goal.DOWN) {
-                    setLiftPos(restPosition);
+                    runLiftToPosition(downPosition);
+                    if (autoStackMode) {
+                        if (downPosition == LiftPosition.REST) {
+                            autoStackMode = false;
+                        }
+                        downPosition = getNextDown(downPosition);
+                    }
                 }
                 break;
         }
@@ -218,8 +282,6 @@ public class Lift implements Component {
     public void setGoal(Goal goal) {
         if (this.goal != goal) {
             this.goal = goal;
-            //resetLiftTimerCanceller.reset();
-            //extendLiftTimerCanceller.reset();
         }
     }
 
@@ -233,6 +295,10 @@ public class Lift implements Component {
 
     public Mode getMode() {
         return mode;
+    }
+
+    public LiftPosition getDownPosition() {
+        return downPosition;
     }
 
     public String test() {

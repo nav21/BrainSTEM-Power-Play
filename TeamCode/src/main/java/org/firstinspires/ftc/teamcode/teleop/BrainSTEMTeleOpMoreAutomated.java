@@ -22,6 +22,8 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
     // private double driveInterpolationFactor = 2;
     private static final double THRESHOLD = 0.001;
 
+    private StickyButton autoStackModeStickyButton = new StickyButton();
+
     private StickyButton heightIncStickyButton = new StickyButton();
     private StickyButton heightDecStickyButton = new StickyButton();
 
@@ -68,7 +70,9 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
     private int heightToggleHits=7;
 
     private void mapControls(BrainSTEMRobot robot) {
-        zeroLiftStickyButton.update(gamepad1.dpad_down);
+        autoStackModeStickyButton.update(gamepad1.dpad_down);
+
+        zeroLiftStickyButton.update(gamepad1.dpad_up);
 
         if( robot.claw.isSafeToChangeClawGoal()) {
             clawIncStickyButton.update(gamepad1.a);
@@ -135,6 +139,11 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
             sd.update(Math.toDegrees(robot.drive.getRawExternalHeading()));
             robot.drive.setMotorPowers(sd.l_f_motor_power, sd.l_b_motor_power, sd.r_b_motor_power, sd.r_f_motor_power);
 
+            // Check for the auto Stack Mode button press and take action
+            if(autoStackModeStickyButton.getState()) {
+                robot.lift.autoStackModeButtonPress();
+            }
+
             if(moveLiftUp) {
                 robot.lift.setGoal(Lift.Goal.UP);
                 telemetry.addLine("Running Motor: Front Left");
@@ -191,7 +200,9 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
 
             telemetry.addData("clawToggleHits: ", clawToggleHits);
             telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
+            telemetry.addData("Lift Goal", robot.lift.getGoal());
             telemetry.addData("Lift Mode", robot.lift.getMode());
+            telemetry.addData("Down Position", robot.lift.getDownPosition());
             telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
             telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
             telemetry.addData("Lift pwr: ", robot.lift.pwr);

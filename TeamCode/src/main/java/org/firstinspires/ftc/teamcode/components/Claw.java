@@ -313,8 +313,8 @@ public class Claw implements Component {
                 case CLOSED:
                   //  clawServoRight.setPosition(0.15);   // Smaller number is more closed
               //      clawServoLeft.setPosition(0.79);    // Larger number is more closed
-                    clawServoRight.setPosition(0.33);   // TORQUE
-                    clawServoLeft.setPosition(0.72);    // TORQUE
+                    clawServoRight.setPosition(0.32);   // TORQUE
+                    clawServoLeft.setPosition(0.69);    // TORQUE
 
                     break;
                 case RELEASE:

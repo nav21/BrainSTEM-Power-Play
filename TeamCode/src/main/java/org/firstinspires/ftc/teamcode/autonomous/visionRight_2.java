@@ -81,7 +81,7 @@ public class visionRight_2 extends BaseAuto {
                 .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         goDepositLow1 = robot.drive.trajectoryBuilder(goToFirstCone3.end())
-                .lineToSplineHeading(new Pose2d(-53, d*20, Math.toRadians(d*225)), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToSplineHeading(new Pose2d(-52, d*20.25, Math.toRadians(d*225)), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.LOW))
                 .addTemporalMarker(0.6, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
@@ -105,15 +105,15 @@ public class visionRight_2 extends BaseAuto {
                 .addTemporalMarker(0.3, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         getInPositionForPark2 = robot.drive.trajectoryBuilder(getInPositionForPark1.end()) // TODO change this end trajectoy
-                .lineToConstantHeading(new Vector2d(-60, d*38), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(-60, d*37), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         parkA = robot.drive.trajectoryBuilder(getInPositionForPark2.end())
-                .lineTo(new Vector2d(-12, d*38), BMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(-12, d*37), BMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         parkB = robot.drive.trajectoryBuilder(getInPositionForPark2.end())
-                .lineTo(new Vector2d(-36, d*38), BMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(-36, d*37), BMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.lift.setGoal(Lift.Goal.DOWN))
                 .addTemporalMarker(0.4, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))

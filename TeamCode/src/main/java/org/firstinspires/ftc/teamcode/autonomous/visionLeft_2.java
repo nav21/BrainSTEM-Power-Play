@@ -49,7 +49,7 @@ public class visionLeft_2 extends BaseAuto {
             yModifier *= 1.0;
         }
 
-        Pose2d startPose = new Pose2d(-36, d*63, Math.toRadians(d*90));
+        Pose2d startPose = new Pose2d(-36, d*64, Math.toRadians(d*90));
         robot.drive.setPoseEstimate(startPose);
 
         goToMedGoalPosition = robot.drive.trajectoryBuilder(startPose,true)
@@ -104,7 +104,7 @@ public class visionLeft_2 extends BaseAuto {
                 .addTemporalMarker(0.3, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         getInPositionForPark2 = robot.drive.trajectoryBuilder(getInPositionForPark1.end()) // TODO change this end trajectoy
-                .lineToConstantHeading(new Vector2d(-60, d*39), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(-60, d*38), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         parkA = robot.drive.trajectoryBuilder(getInPositionForPark2.end())

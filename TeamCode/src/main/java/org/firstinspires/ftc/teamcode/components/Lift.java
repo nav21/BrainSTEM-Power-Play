@@ -66,9 +66,9 @@ public class Lift implements Component {
     //private final double heightScale = 38.0/61.0;  // 1/1.6053
     private final int restPosition = (int)(240);
     private final int junctionPosition = (int)(3210);
-    private final int lowPosition = (int)(26684);
-    private final int medPosition = (int)(44545);
-    private final int highPosition = (int)(62000);
+    private final int lowPosition = (int)(25684);
+    private final int medPosition = (int)(43545);
+    private final int highPosition = (int)(61000);
 
     private final int cone5 = 20+(2025*4); // 8120
     private final int cone4 = 20+(2025*3); // 6095
@@ -233,7 +233,7 @@ public class Lift implements Component {
             // Target a down amount of 1000 ticks per 30ms
             downAmount = (now-prevDownTime) * downRate;
             pidTgtPos = Math.max(tgtPos, curPos - downAmount);
-            if (curPos < 25000) {
+            if (curPos < 28000) {
                 pid.setOutputLimits(-0.45, MAX_LIFT_UP_PWR);
             } else if (curPos < 55000) {
                 pid.setOutputLimits(-0.04, MAX_LIFT_UP_PWR);

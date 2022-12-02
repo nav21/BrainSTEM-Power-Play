@@ -135,6 +135,7 @@ public abstract class BaseAuto extends LinearOpMode {
 
         telemetry.update();
 
+        /*
         logger.logD("CheckWait",String.format(" Time: %.2f, CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f V:%.2f, Min: %.2f Max: %.2f",
         runtime.seconds(),
         robot.claw.getCurrentGoal(),
@@ -146,6 +147,7 @@ public abstract class BaseAuto extends LinearOpMode {
         robot.drive.batteryVoltageSensor.getVoltage(),
         robot.lift.pid.getOutputMin(),
         robot.lift.pid.getOutputMax()));
+        */
     }
 
     public abstract void buildPaths(AutoBrainSTEMRobot robot);

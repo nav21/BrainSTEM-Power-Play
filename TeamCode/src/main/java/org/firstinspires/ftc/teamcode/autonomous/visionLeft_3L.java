@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.components.Lift;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
-@Autonomous(name="Left_V+3", group = "auto")
-public class visionLeft_2 extends BaseAuto {
+@Autonomous(name="Left_V+3L", group = "auto")
+public class visionLeft_3L extends BaseAuto {
     private Trajectory goToMedGoalPosition ;
     private Trajectory depositPreloadMedGoal;
     private Trajectory goToFirstCone1;
@@ -55,14 +55,14 @@ public class visionLeft_2 extends BaseAuto {
         goToMedGoalPosition = robot.drive.trajectoryBuilder(startPose,true)
                 .lineToSplineHeading(new Pose2d(-36, d*36, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToConstantHeading(new Vector2d(-36, d*24.5), BMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToConstantHeading(new Vector2d(-36, d*25), BMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID))
                 .addTemporalMarker(0.7, () -> robot.lift.setGoal(Lift.Goal.UP))
                 .addTemporalMarker(2, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
                 .build();
         depositPreloadMedGoal = robot.drive.trajectoryBuilder(goToMedGoalPosition.end())
-                .lineTo(new Vector2d(-30.5+xModifier, d*(24.5+yModifier)), BMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(-30.5+xModifier, d*(25+yModifier)), BMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         goToFirstCone1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())

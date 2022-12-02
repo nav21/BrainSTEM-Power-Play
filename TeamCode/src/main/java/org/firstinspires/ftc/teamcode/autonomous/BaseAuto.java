@@ -4,12 +4,14 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.autonomous.vision.AllianceColor;
 import org.firstinspires.ftc.teamcode.autonomous.vision.VisionLibrary;
 import org.firstinspires.ftc.teamcode.autonomous.vision.SignalSleevePosition;
 import org.firstinspires.ftc.teamcode.autonomous.vision.TeamMarkerPosition;
 import org.firstinspires.ftc.teamcode.buttons.StickyButton;
 import org.firstinspires.ftc.teamcode.components.AutoBrainSTEMRobot;
+import org.firstinspires.ftc.teamcode.utils.BotLog;
 import org.firstinspires.ftc.teamcode.utils.Component;
 
 public abstract class BaseAuto extends LinearOpMode {
@@ -27,10 +29,12 @@ public abstract class BaseAuto extends LinearOpMode {
 
     private SignalSleevePosition signalSleevePosition = SignalSleevePosition.TWO;
 
+    // public BotLog logger = new BotLog();
 
     @Override
     public void runOpMode() {
         PhotonCore.enable();
+        // logger.LOGLEVEL = logger.LOGDEBUG;
 
         telemetry.addLine("Creating Robot class");
         telemetry.update();
@@ -113,6 +117,7 @@ public abstract class BaseAuto extends LinearOpMode {
         //telemetry.addData("clawToggleHits: ", clawToggleHits);
         telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
         telemetry.addData("Lift Mode", robot.lift.getMode());
+        telemetry.addData("Lift Goal", robot.lift.getGoal());
         telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
         telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
         telemetry.addData("Lift pwr: ", robot.lift.pwr);
@@ -124,6 +129,19 @@ public abstract class BaseAuto extends LinearOpMode {
         telemetry.addData("Signal Pos", signalSleevePosition);
 
         telemetry.update();
+
+        /*
+        logger.logD("CheckWait",String.format(" CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f Min: %.2f Max: %.2f",
+        robot.claw.getCurrentGoal(),
+        robot.lift.getMode(),
+        robot.lift.getGoal(),
+        robot.lift.getLiftEncoderTicks(),
+        robot.lift.getTgtPos(),
+        robot.lift.pwr,
+        robot.lift.pid.getOutputMin(),
+        robot.lift.pid.getOutputMax()));
+        */
+
     }
 
     public abstract void buildPaths(AutoBrainSTEMRobot robot);

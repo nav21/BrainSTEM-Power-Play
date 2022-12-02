@@ -111,6 +111,7 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
         BrainSTEMRobot robot = new BrainSTEMRobot(this);
 
         robot.initTeleOp();
+        robot.lift.MAX_LIFT_UP_PWR = 0.95 ;
 
         // This is a 'better' way to do the smooth drive where we push everything into a class
         SmoothDrive sd = new SmoothDrive( gamepad1, gamepad2 );

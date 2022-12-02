@@ -35,7 +35,7 @@ public class Lift implements Component {
     //private double F = 0.3/34000;    // @ 13V resting (12.8V under load)
     private double F = 0;    // @ 13V resting (12.8V under load)
     private double vF = F;            // Voltage adjusted F (use battery reading to help here)
-    private static double MAX_LIFT_UP_PWR = 0.95 ;
+    public double MAX_LIFT_UP_PWR = 0.95 ;
     public static double MIN_LIFT_UP_PWR = 0.01 ;
 
     private NanoClock PIDClock = NanoClock.system();   // Keep time interval because we can't call at a regular interval
@@ -236,9 +236,9 @@ public class Lift implements Component {
             if (curPos < 34000) {
                 pid.setOutputLimits(-0.45, MAX_LIFT_UP_PWR);
             } else if (curPos < 55000) {
-                pid.setOutputLimits(-0.04, MAX_LIFT_UP_PWR);
+                pid.setOutputLimits(-0.05, MAX_LIFT_UP_PWR);
             } else {
-                pid.setOutputLimits(0.0, MAX_LIFT_UP_PWR);
+                pid.setOutputLimits(-0.05, MAX_LIFT_UP_PWR);
             }
         }
         updateLiftPID();

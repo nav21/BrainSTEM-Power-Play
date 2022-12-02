@@ -89,7 +89,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
     private List<DcMotorEx> motors;
 
     private BNO055IMU imu;
-    private VoltageSensor batteryVoltageSensor;
+    public VoltageSensor batteryVoltageSensor;
     // public BotLog logger = new BotLog();
 
     public void initIMU(HardwareMap hardwareMap) {

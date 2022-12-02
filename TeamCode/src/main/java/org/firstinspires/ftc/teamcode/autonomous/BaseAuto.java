@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.outoftheboxrobotics.photoncore.PhotonCore;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.autonomous.vision.AllianceColor;
@@ -27,14 +28,16 @@ public abstract class BaseAuto extends LinearOpMode {
     public double xModifier = 0.0;
     public double yModifier = 0.0;
 
+    public ElapsedTime runtime = new ElapsedTime();
+
     private SignalSleevePosition signalSleevePosition = SignalSleevePosition.TWO;
 
-    // public BotLog logger = new BotLog();
+    public BotLog logger = new BotLog();
 
     @Override
     public void runOpMode() {
         PhotonCore.enable();
-        // logger.LOGLEVEL = logger.LOGDEBUG;
+        logger.LOGLEVEL = logger.LOGDEBUG;
 
         telemetry.addLine("Creating Robot class");
         telemetry.update();
@@ -53,6 +56,7 @@ public abstract class BaseAuto extends LinearOpMode {
         telemetry.addLine("InitAuto for components");
         telemetry.update();
         robot.initAuto();
+        robot.lift.MAX_LIFT_UP_PWR = 0.65 ;
 
         showTelemetry();
 
@@ -101,6 +105,7 @@ public abstract class BaseAuto extends LinearOpMode {
 
             showTelemetry();
         }
+        runtime.reset();
 
         visionLibrary.stopVision();
 
@@ -130,18 +135,17 @@ public abstract class BaseAuto extends LinearOpMode {
 
         telemetry.update();
 
-        /*
-        logger.logD("CheckWait",String.format(" CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f Min: %.2f Max: %.2f",
+        logger.logD("CheckWait",String.format(" Time: %.2f, CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f V:%.2f, Min: %.2f Max: %.2f",
+        runtime.seconds(),
         robot.claw.getCurrentGoal(),
         robot.lift.getMode(),
         robot.lift.getGoal(),
         robot.lift.getLiftEncoderTicks(),
         robot.lift.getTgtPos(),
         robot.lift.pwr,
+        robot.drive.batteryVoltageSensor.getVoltage(),
         robot.lift.pid.getOutputMin(),
         robot.lift.pid.getOutputMax()));
-        */
-
     }
 
     public abstract void buildPaths(AutoBrainSTEMRobot robot);

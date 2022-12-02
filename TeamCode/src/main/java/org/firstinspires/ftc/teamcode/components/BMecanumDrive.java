@@ -48,8 +48,15 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 import org.firstinspires.ftc.teamcode.util.AxesSigns;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.utils.BotLog;
 import org.firstinspires.ftc.teamcode.utils.Component;
 import org.firstinspires.ftc.teamcode.util.AxisDirection;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Quaternion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +67,7 @@ import java.util.List;
  */
 @Config
 public class BMecanumDrive extends MecanumDrive implements Component {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(3, 0, 0);
 
     // TODO
@@ -83,6 +90,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
+    // public BotLog logger = new BotLog();
 
     public void initIMU(HardwareMap hardwareMap) {
         // TODO: adjust the names of the following hardware devices to match your configuration
@@ -166,6 +174,8 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         // setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+
+        // logger.LOGLEVEL = logger.LOGDEBUG ;
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -350,6 +360,46 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         rightRear.setPower(vRR);
         rightFront.setPower(vRF);
     }
+
+    /*
+    public double getQHeading()
+    {
+        Quaternion q = imu.getQuaternionOrientation();
+        Orientation gyroOrien = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        q = q.normalized();
+
+        // This code was leveraged from here:
+        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
+
+        // May not need the next 3 lines
+        double t=q.x*q.y + q.z*q.w;
+        double h,a,b;
+        double sqy = q.y * q.y;
+        //double b;
+        double sqx = q.x * q.x;
+        double sqz = q.z * q.z;
+
+        // We only need 'b' here since our bot is only intending to rotate in one dimension
+        // We don't need to worry about singularities for Quaternion to Euler conversion
+        // Because of a single dimension of turning.
+        // May not need h and a
+        h = Math.atan2(2 * q.y * q.w - 2 * q.x * q.z, 1 - 2 * sqy - 2 * sqz);
+        a = Math.asin(2 * t);
+        b = Math.atan2(2 * q.x * q.w - 2 * q.y * q.z, 1 - 2 * sqx - 2 * sqz);
+
+        // This code is a way to compare our Quaternion vs Euler gyro readings
+        logger.logD("MechLog",String.format(" getQHeading: t:%f, h/Y:%f(%f), a/Z:%f(%f), b/X:%f(%f)",
+                     t,
+                     -(h/Math.PI)*180,
+                     AngleUnit.DEGREES.fromUnit(gyroOrien.angleUnit, gyroOrien.secondAngle),
+                     -(a/Math.PI)*180,
+                     AngleUnit.DEGREES.fromUnit(gyroOrien.angleUnit, gyroOrien.firstAngle),
+                     -(b/Math.PI)*180,
+                     AngleUnit.DEGREES.fromUnit(gyroOrien.angleUnit, gyroOrien.thirdAngle)));
+
+        return (-(b/Math.PI)*180.0);
+    }
+    */
 
     @Override
     public double getRawExternalHeading() {

@@ -233,7 +233,7 @@ public class Lift implements Component {
             // Target a down amount of 1000 ticks per 30ms
             downAmount = (now-prevDownTime) * downRate;
             pidTgtPos = Math.max(tgtPos, curPos - downAmount);
-            if (curPos < 28000) {
+            if (curPos < 34000) {
                 pid.setOutputLimits(-0.45, MAX_LIFT_UP_PWR);
             } else if (curPos < 55000) {
                 pid.setOutputLimits(-0.04, MAX_LIFT_UP_PWR);

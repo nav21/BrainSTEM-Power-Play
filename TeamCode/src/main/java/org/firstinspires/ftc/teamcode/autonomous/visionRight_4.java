@@ -28,6 +28,7 @@ public class visionRight_4 extends BaseAuto {
     private Trajectory goReturnToCone1;
     private Trajectory goReturnToCone2;
     private Trajectory goReturnToCone3;
+    private Trajectory goReturnToCone4;
     private Trajectory getInPositionForPark1;
     private Trajectory getInPositionForPark2;
     private Trajectory park2;
@@ -99,6 +100,11 @@ public class visionRight_4 extends BaseAuto {
                 .lineToSplineHeading(new Pose2d(-65, d*13.25, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addTemporalMarker(0.5, () -> robot.lift.setMode(Lift.Mode.CONE_2))
+                .build();
+        goReturnToCone4 = robot.drive.trajectoryBuilder(goDepositLow1.end())
+                .lineToSplineHeading(new Pose2d(-65, d*13.25, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addTemporalMarker(0.5, () -> robot.lift.setMode(Lift.Mode.REST))
                 .build();
         getInPositionForPark1= robot.drive.trajectoryBuilder(goDepositLow1.end()) // TODO change this end trajectoy
                 .lineToSplineHeading(new Pose2d(-59, d*18, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -198,32 +204,56 @@ public class visionRight_4 extends BaseAuto {
 
         robot.claw.setCurrentGoal(Claw.Goal.DEPOSIT);
 
-        robot.drive.followTrajectoryAsync(getInPositionForPark1);
-        CheckWait(0);         // FollowTrajectory
+        if ((className.contains("left") && (signalSleevePosition == SignalSleevePosition.ONE)) ||
+                (className.contains("right") && (signalSleevePosition == SignalSleevePosition.THREE))) {
 
-        robot.drive.followTrajectoryAsync(getInPositionForPark2);
-        CheckWait(0);         // FollowTrajectory
+            robot.drive.followTrajectoryAsync(goReturnToCone4);
+            CheckWait(0);         // FollowTrajectory
 
-        robot.lift.setGoal(Lift.Goal.DOWN);
-        robot.claw.setCurrentGoal(Claw.Goal.RESET);
+            robot.claw.setCurrentGoal(Claw.Goal.COLLECT_MID);
+            CheckWait(0);         // FollowTrajectory
+            CheckWait(350);
 
-        if (className.contains("right")) {
-            if (signalSleevePosition == SignalSleevePosition.ONE) {
-                robot.drive.followTrajectoryAsync(park2);
-                CheckWait(0);         // FollowTrajectory
+            robot.drive.followTrajectoryAsync(goDepositLow1);
+            CheckWait(0);         // FollowTrajectory
 
-            } else if (signalSleevePosition == SignalSleevePosition.TWO) {
-                robot.drive.followTrajectoryAsync(park3);
-                CheckWait(0);         // FollowTrajectory
-            }
+            robot.claw.setCurrentGoal(Claw.Goal.DEPOSIT);
+
+            robot.drive.followTrajectoryAsync(getInPositionForPark1);
+            CheckWait(0);         // FollowTrajectory
+
+            robot.lift.setGoal(Lift.Goal.DOWN);
+            robot.claw.setCurrentGoal(Claw.Goal.RESET);
+
         } else {
-            if (signalSleevePosition == SignalSleevePosition.TWO) {
-                robot.drive.followTrajectoryAsync(park2);
-                CheckWait(0);         // FollowTrajectory
 
-            } else if (signalSleevePosition == SignalSleevePosition.THREE) {
-                robot.drive.followTrajectoryAsync(park3);
-                CheckWait(0);         // FollowTrajectory
+            robot.drive.followTrajectoryAsync(getInPositionForPark1);
+            CheckWait(0);         // FollowTrajectory
+
+            robot.drive.followTrajectoryAsync(getInPositionForPark2);
+            CheckWait(0);         // FollowTrajectory
+
+            robot.lift.setGoal(Lift.Goal.DOWN);
+            robot.claw.setCurrentGoal(Claw.Goal.RESET);
+
+            if (className.contains("right")) {
+                if (signalSleevePosition == SignalSleevePosition.ONE) {
+                    robot.drive.followTrajectoryAsync(park2);
+                    CheckWait(0);         // FollowTrajectory
+
+                } else if (signalSleevePosition == SignalSleevePosition.TWO) {
+                    robot.drive.followTrajectoryAsync(park3);
+                    CheckWait(0);         // FollowTrajectory
+                }
+            } else {
+                if (signalSleevePosition == SignalSleevePosition.TWO) {
+                    robot.drive.followTrajectoryAsync(park2);
+                    CheckWait(0);         // FollowTrajectory
+
+                } else if (signalSleevePosition == SignalSleevePosition.THREE) {
+                    robot.drive.followTrajectoryAsync(park3);
+                    CheckWait(0);         // FollowTrajectory
+                }
             }
         }
 

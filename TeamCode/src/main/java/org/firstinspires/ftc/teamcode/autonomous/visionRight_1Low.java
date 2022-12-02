@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.autonomous.vision.SignalSleevePosition;
 import org.firstinspires.ftc.teamcode.components.AutoBrainSTEMRobot;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.components.Lift;
  * This is a simple routine to test translational drive capabilities.
  */
 @Config
+@Disabled
 @Autonomous(name="Right_V+1Low", group = "auto")
 public class visionRight_1Low extends BaseAuto {
     private Trajectory goToMedGoalPosition ;

@@ -262,6 +262,8 @@ public class Lift implements Component {
                     runLiftToPosition(LiftPosition.CONE_3);
                 }else if (mode.equals(Mode.CONE_2)) {
                     runLiftToPosition(LiftPosition.CONE_2);
+                }else if (mode.equals(Mode.REST)) {
+                    runLiftToPosition(LiftPosition.REST);
                 }
                 break;
             case DOWN:

@@ -74,7 +74,7 @@ public class visionLeft_4M extends BaseAuto {
 //        goToFirstCone1 = robot.drive.trajectoryBuilder(depositPreloadMedGoal.end())
 //                .lineToConstantHeading(new Vector2d(-37, d*25), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                .addTemporalMarker(0.1, () -> robot.lift.setMode(Lift.Mode.CONE_5))
+//                .addTemporalMarker(0.1, () -> robot.lift.setHeight(Lift.Height.CONE_5))
 //                .build();
 //        goToFirstCone2 = robot.drive.trajectoryBuilder(goToFirstCone1.end())
 //                .lineToConstantHeading(new Vector2d(-40, d*14), BMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -85,7 +85,7 @@ public class visionLeft_4M extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineToConstantHeading(new Vector2d(-12.5, d*8), Math.toRadians(90), BMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.CONE_5))
+                .addTemporalMarker(0.01, () -> robot.lift.setHeight(Lift.Height.CONE_5))
                 .addTemporalMarker(0.4, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         goDepositConeMed = robot.drive.trajectoryBuilder(goToFirstCone3.end(), true)
@@ -93,7 +93,7 @@ public class visionLeft_4M extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineToSplineHeading(new Pose2d(-19.3, -43, Math.toRadians(d*320)), Math.toRadians(-140), BMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.MED))
+                .addTemporalMarker(0.01, () -> robot.lift.setHeight(Lift.Height.MED))
                 .addTemporalMarker(1.5, () -> robot.claw.setCurrentGoal(Claw.Goal.FLIP))
                 .build();
         goReturnToCone1 = robot.drive.trajectoryBuilder(goDepositConeMed.end())
@@ -101,7 +101,7 @@ public class visionLeft_4M extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineToSplineHeading(new Pose2d(-12.5, -8, Math.toRadians(d*270)), Math.toRadians(90), BMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.CONE_4))
+                .addTemporalMarker(0.01, () -> robot.lift.setHeight(Lift.Height.CONE_4))
                 .addTemporalMarker(0.4, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
         goReturnToCone2 = robot.drive.trajectoryBuilder(goDepositConeMed.end())
@@ -109,14 +109,14 @@ public class visionLeft_4M extends BaseAuto {
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineToSplineHeading(new Pose2d(-12.5, -8, Math.toRadians(d*270)), Math.toRadians(90), BMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addTemporalMarker(0.01, () -> robot.lift.setMode(Lift.Mode.CONE_3))
+                .addTemporalMarker(0.01, () -> robot.lift.setHeight(Lift.Height.CONE_3))
                 .addTemporalMarker(0.4, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
                 .build();
 //        goReturnToCone2 = robot.drive.trajectoryBuilder(goDepositConeMed.end())
 //                .lineToSplineHeading(new Pose2d(-65, d*13.5, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        BMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 //                .addTemporalMarker(0.01, () -> robot.claw.setCurrentGoal(Claw.Goal.RESET))
-//                .addTemporalMarker(0.2, () -> robot.lift.setMode(Lift.Mode.CONE_3))
+//                .addTemporalMarker(0.2, () -> robot.lift.setHeight(Lift.Height.CONE_3))
 //                .build();
         getInPositionForPark1= robot.drive.trajectoryBuilder(goDepositConeMed.end()) // TODO change this end trajectoy
                 .lineToSplineHeading(new Pose2d(-59, d*18, Math.toRadians(d*180)), BMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -152,7 +152,7 @@ public class visionLeft_4M extends BaseAuto {
 
         robot.lift.setGoal(Lift.Goal.OPEN_LOOP);
         robot.claw.setCurrentGoal(Claw.Goal.OPEN_LOOP);
-        robot.lift.setMode(Lift.Mode.MED);
+        robot.lift.setHeight(Lift.Height.MED);
         robot.drive.followTrajectoryAsync(goToMedGoalPosition);
         CheckWait(0);         // FollowTrajectory
         CheckWait(100);

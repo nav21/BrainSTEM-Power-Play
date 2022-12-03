@@ -31,8 +31,20 @@ public class TimerCanceller implements Canceller
 	//Returns if the time requirement is met
 	public boolean isConditionMet()
 	{
-		return start + ms < System.currentTimeMillis();
+		return ((start + ms) < System.currentTimeMillis());
 	}
+
+	public double timeRemaining()
+	{
+		double now = System.currentTimeMillis();
+
+		if( (start + ms) > now ) {
+			return ((start + ms) - now);
+		} else {
+			return(0.0);
+		}
+	}
+
 
 	//Waits for timer to finish
 	public void waitForCanceller()

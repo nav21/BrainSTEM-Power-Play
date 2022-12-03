@@ -57,7 +57,7 @@ public class Lift implements Component {
         OPEN_LOOP, UP, DOWN, MANUAL
     }
 
-    public enum Mode {
+    public enum Height {
         HIGH, MED, LOW, JUNC, REST, CONE_5, CONE_4, CONE_3, CONE_2, INIT
     }
 
@@ -91,7 +91,7 @@ public class Lift implements Component {
 
     private Goal goal = Goal.OPEN_LOOP;
     private Goal prevGoal = Goal.OPEN_LOOP;
-    private Mode mode = Mode.HIGH;
+    private Height height = Height.HIGH;
     public double pwr=0.0;
     private boolean autoStackMode=false;
 
@@ -246,23 +246,23 @@ public class Lift implements Component {
             case OPEN_LOOP:
                 break;
             case UP:
-                if (mode.equals(Mode.HIGH)) {
+                if (height.equals(Height.HIGH)) {
                     runLiftToPosition(LiftPosition.HIGH);
-                } else if (mode.equals(Mode.MED)) {
+                } else if (height.equals(Height.MED)) {
                     runLiftToPosition(LiftPosition.MED);
-                } else if (mode.equals(Mode.LOW)) {
+                } else if (height.equals(Height.LOW)) {
                     runLiftToPosition(LiftPosition.LOW);
-                } else if (mode.equals(Mode.JUNC)) {
+                } else if (height.equals(Height.JUNC)) {
                     runLiftToPosition(LiftPosition.JUNC);
-                }else if (mode.equals(Mode.CONE_5)) {
+                }else if (height.equals(Height.CONE_5)) {
                     runLiftToPosition(LiftPosition.CONE_5);
-                }else if (mode.equals(Mode.CONE_4)) {
+                }else if (height.equals(Height.CONE_4)) {
                     runLiftToPosition(LiftPosition.CONE_4);
-                }else if (mode.equals(Mode.CONE_3)) {
+                }else if (height.equals(Height.CONE_3)) {
                     runLiftToPosition(LiftPosition.CONE_3);
-                }else if (mode.equals(Mode.CONE_2)) {
+                }else if (height.equals(Height.CONE_2)) {
                     runLiftToPosition(LiftPosition.CONE_2);
-                }else if (mode.equals(Mode.REST)) {
+                }else if (height.equals(Height.REST)) {
                     runLiftToPosition(LiftPosition.REST);
                 }
                 break;
@@ -291,12 +291,12 @@ public class Lift implements Component {
         return goal;
     }
 
-    public void setMode(Mode mode) {
-        this.mode = mode;
+    public void setHeight(Height height) {
+        this.height = height;
     }
 
-    public Mode getMode() {
-        return mode;
+    public Height getHeight() {
+        return height;
     }
 
     public LiftPosition getDownPosition() {

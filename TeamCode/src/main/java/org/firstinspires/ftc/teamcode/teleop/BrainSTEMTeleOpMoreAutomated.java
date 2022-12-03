@@ -16,12 +16,6 @@ import org.firstinspires.ftc.teamcode.utils.SmoothDrive;
 
 @TeleOp
 public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
-
-    // private double leftTuningFactor = 1;
-    // private double rightTuningFactor = 1;
-    // private double driveInterpolationFactor = 2;
-    private static final double THRESHOLD = 0.001;
-
     private StickyButton autoStackModeStickyButton = new StickyButton();
 
     private StickyButton heightIncStickyButton = new StickyButton();
@@ -158,7 +152,7 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
                     robot.claw.setCurrentGoal(Claw.Goal.COLLECT_25);
                     break;
                 case 2:
-                    robot.claw.setCurrentGoal(Claw.Goal.COLLECT);
+                    robot.claw.setCurrentGoal(Claw.Goal.GO_TO_DEPOSIT);
                     break;
                 case 3:
 
@@ -171,28 +165,28 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
 
             switch (heightToggleHits % 8) {
                 case 0:
-                    robot.lift.setMode(Lift.Mode.JUNC);
+                    robot.lift.setHeight(Lift.Height.JUNC);
                     break;
                 case 1:
-                    robot.lift.setMode(Lift.Mode.CONE_2);
+                    robot.lift.setHeight(Lift.Height.CONE_2);
                     break;
                 case 2:
-                    robot.lift.setMode(Lift.Mode.CONE_3);
+                    robot.lift.setHeight(Lift.Height.CONE_3);
                     break;
                 case 3:
-                    robot.lift.setMode(Lift.Mode.CONE_4);
+                    robot.lift.setHeight(Lift.Height.CONE_4);
                     break;
                 case 4:
-                    robot.lift.setMode(Lift.Mode.CONE_5);
+                    robot.lift.setHeight(Lift.Height.CONE_5);
                     break;
                 case 5:
-                    robot.lift.setMode(Lift.Mode.LOW);
+                    robot.lift.setHeight(Lift.Height.LOW);
                     break;
                 case 6:
-                    robot.lift.setMode(Lift.Mode.MED);
+                    robot.lift.setHeight(Lift.Height.MED);
                     break;
                 case 7:
-                    robot.lift.setMode(Lift.Mode.HIGH);
+                    robot.lift.setHeight(Lift.Height.HIGH);
                     break;
             }
 
@@ -202,7 +196,7 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
             telemetry.addData("clawToggleHits: ", clawToggleHits);
             telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
             telemetry.addData("Lift Goal", robot.lift.getGoal());
-            telemetry.addData("Lift Mode", robot.lift.getMode());
+            telemetry.addData("Lift Mode", robot.lift.getHeight());
             telemetry.addData("Down Position", robot.lift.getDownPosition());
             telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
             telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
@@ -211,6 +205,22 @@ public class BrainSTEMTeleOpMoreAutomated extends LinearOpMode {
             telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
             telemetry.addData("Prev Claw Goal Collect_25: ", robot.claw.getPrevGoalCollect25());
             telemetry.update();
+
+            /*
+            robot.logger.logD("Teleop",String.format(" Time: %.3f, DSC2:%.3f, CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f V:%.2f, Min: %.2f Max: %.2f",
+                    runtime.seconds(),
+                    robot.claw.disableServoCanceller2.timeRemaining(),
+                    robot.claw.getCurrentGoal(),
+                    robot.lift.getHeight(),
+                    robot.lift.getGoal(),
+                    robot.lift.getLiftEncoderTicks(),
+                    robot.lift.getTgtPos(),
+                    robot.lift.pwr,
+                    robot.drive.batteryVoltageSensor.getVoltage(),
+                    robot.lift.pid.getOutputMin(),
+                    robot.lift.pid.getOutputMax()));
+
+             */
         }
     }
 }

@@ -33,6 +33,10 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 
          // If we're not there and can move
          if ((currPos != tgtPos) && (rate != 0.0)) {
+             if (!servo.isPwmEnabled()) {
+                 servo.setPwmEnable();
+             }
+
              // Measure elapsed time, compute allowed movement, record time
              deltaT = now - prevTime;
              deltaP = rate * deltaT;
@@ -64,5 +68,8 @@ import com.acmerobotics.roadrunner.util.NanoClock;
          prevTime = clock.seconds();
          tgtPos = position;
          this.rate = Math.abs((tgtPos - currPos) / (ms / 1000.0));
+         if (!servo.isPwmEnabled()) {
+             servo.setPwmEnable();
+         }
      }
 }

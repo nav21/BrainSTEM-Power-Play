@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.Component;
 
 public class Claw implements Component {
     public enum Goal {
-        OPEN_LOOP,  COLLECT_MID, RETURN_MID, RESET, RELEASE, FLIP, COLLECT, DEPOSIT, DEPOSIT_2, DEPOSIT_3,DEPOSIT_4,DEPOSIT_5, DEPOSIT_6, COLLECT_25, RETURN_SPECIAL
+        OPEN_LOOP,  COLLECT_MID, RETURN_MID, RESET, RELEASE, FLIP, GO_TO_DEPOSIT, DEPOSIT, DEPOSIT_2, DEPOSIT_3,DEPOSIT_4,DEPOSIT_5, DEPOSIT_6, COLLECT_25, RETURN_SPECIAL
     }
 
     private final ServoImplEx clawServoRight;
@@ -49,8 +49,8 @@ public class Claw implements Component {
     private TimerCanceller returnMidFlipCanceller = new TimerCanceller(250);
     private TimerCanceller autoFlipUpCanceller = new TimerCanceller(400);
     private TimerCanceller autoReleaseCanceller = new TimerCanceller(300);
-    private TimerCanceller disableServoCanceller = new TimerCanceller(550);
-    private TimerCanceller disableServoCanceller2 = new TimerCanceller(500);
+    private TimerCanceller disableServoCanceller = new TimerCanceller(750);
+    public TimerCanceller disableServoCanceller2 = new TimerCanceller(700);
     private TimerCanceller dropDelayCanceller = new TimerCanceller(150);
     private TimerCanceller closeDelayCanceller = new TimerCanceller(150);
     private TimerCanceller openClawCanceller2 = new TimerCanceller(500*(1.0/2.0));
@@ -194,7 +194,7 @@ public class Claw implements Component {
                 break;
             case DEPOSIT_6:
                 break;
-            case COLLECT:
+            case GO_TO_DEPOSIT:
                 if(disableServoCanceller2.isConditionMet()) {
                     disableFlipServo();
                 }
@@ -253,10 +253,10 @@ public class Claw implements Component {
                     depositorStateCanceller.reset(250);
                     break;
                 case DEPOSIT:
-                    depositorStateCanceller.reset(250);
+                    depositorStateCanceller.reset(600);
                     break;
-                case COLLECT:
-                    depositorStateCanceller.reset(250);
+                case GO_TO_DEPOSIT:
+                    depositorStateCanceller.reset(600);
                     break;
                 default:
                     depositorStateCanceller.reset(500);

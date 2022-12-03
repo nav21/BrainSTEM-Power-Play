@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.utils.BotLog;
 import org.firstinspires.ftc.teamcode.utils.Component;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class BrainSTEMRobot {
     public Claw claw;
     public Lift lift;
     public VoltageSensor Vsense;
+    public BotLog logger = new BotLog();
 
     //List of components to be initialized
     private final ArrayList<Component> components;
@@ -31,6 +33,7 @@ public class BrainSTEMRobot {
     public BrainSTEMRobot(LinearOpMode opMode) {
         //Get instance of hardware map and telemetry
         HardwareMap map = opMode.hardwareMap;
+        logger.LOGLEVEL = logger.LOGDEBUG;
 
         components = new ArrayList<>();
 

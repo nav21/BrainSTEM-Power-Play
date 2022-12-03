@@ -94,7 +94,7 @@ public class visionRight_1 extends BaseAuto {
     public void runMain(AutoBrainSTEMRobot robot, SignalSleevePosition signalSleevePosition) {
         robot.lift.setGoal(Lift.Goal.OPEN_LOOP);
         robot.claw.setCurrentGoal(Claw.Goal.OPEN_LOOP);
-        robot.lift.setMode(Lift.Mode.MED);
+        robot.lift.setHeight(Lift.Height.MED);
         robot.drive.followTrajectoryAsync(goToMedGoalPosition);
         CheckWait(0);         // FollowTrajectory
         CheckWait(200);

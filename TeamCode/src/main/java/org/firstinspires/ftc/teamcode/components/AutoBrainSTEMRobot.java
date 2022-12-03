@@ -5,10 +5,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.utils.BotLog;
 import org.firstinspires.ftc.teamcode.utils.Component;
 import org.firstinspires.ftc.teamcode.components.Lift;
 import org.firstinspires.ftc.teamcode.components.Claw;
 import org.firstinspires.ftc.teamcode.components.BMecanumDrive;
+import org.firstinspires.ftc.teamcode.utils.BotLog;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,7 @@ public class AutoBrainSTEMRobot implements Runnable
     public Claw claw;
     public Lift lift;
     public VoltageSensor Vsense;
+    public BotLog logger = new BotLog();
 
     private Thread updateThread;
     private boolean started = false;
@@ -41,6 +44,7 @@ public class AutoBrainSTEMRobot implements Runnable
     public AutoBrainSTEMRobot(LinearOpMode opMode)
     {
         this.opMode = opMode;
+        logger.LOGLEVEL = logger.LOGDEBUG;
 
         //Get instance of hardware map and telemetry
         HardwareMap map = opMode.hardwareMap;

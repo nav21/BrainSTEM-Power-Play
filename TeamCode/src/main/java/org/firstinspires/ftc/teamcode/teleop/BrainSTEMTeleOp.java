@@ -22,12 +22,6 @@ import org.firstinspires.ftc.teamcode.components.Lift;
 @TeleOp
 @Disabled
 public class BrainSTEMTeleOp extends LinearOpMode {
-
-    // private double leftTuningFactor = 1;
-    // private double rightTuningFactor = 1;
-    // private double driveInterpolationFactor = 2;
-    private static final double THRESHOLD = 0.001;
-
     private StickyButton heightIncStickyButton = new StickyButton();
     private StickyButton heightDecStickyButton = new StickyButton();
 
@@ -171,28 +165,28 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
             switch (heightToggleHits % 8) {
                 case 0:
-                    robot.lift.setMode(Lift.Mode.JUNC);
+                    robot.lift.setHeight(Lift.Height.JUNC);
                     break;
                 case 1:
-                    robot.lift.setMode(Lift.Mode.CONE_2);
+                    robot.lift.setHeight(Lift.Height.CONE_2);
                     break;
                 case 2:
-                    robot.lift.setMode(Lift.Mode.CONE_3);
+                    robot.lift.setHeight(Lift.Height.CONE_3);
                     break;
                 case 3:
-                    robot.lift.setMode(Lift.Mode.CONE_4);
+                    robot.lift.setHeight(Lift.Height.CONE_4);
                     break;
                 case 4:
-                    robot.lift.setMode(Lift.Mode.CONE_5);
+                    robot.lift.setHeight(Lift.Height.CONE_5);
                     break;
                 case 5:
-                    robot.lift.setMode(Lift.Mode.LOW);
+                    robot.lift.setHeight(Lift.Height.LOW);
                     break;
                 case 6:
-                    robot.lift.setMode(Lift.Mode.MED);
+                    robot.lift.setHeight(Lift.Height.MED);
                     break;
                 case 7:
-                    robot.lift.setMode(Lift.Mode.HIGH);
+                    robot.lift.setHeight(Lift.Height.HIGH);
                     break;
             }
 
@@ -201,13 +195,27 @@ public class BrainSTEMTeleOp extends LinearOpMode {
 
             telemetry.addData("clawToggleHits: ", clawToggleHits);
             telemetry.addData("Claw Goal", robot.claw.getCurrentGoal());
-            telemetry.addData("Lift Mode", robot.lift.getMode());
+            telemetry.addData("Lift Mode", robot.lift.getHeight());
             telemetry.addData("Act Height: ", robot.lift.getLiftEncoderTicks());
             telemetry.addData("Tgt Height: ", robot.lift.getTgtPos());
             telemetry.addData("Lift pwr: ", robot.lift.pwr);
             telemetry.addData("Min pwr: ", robot.lift.pid.getOutputMin());
             telemetry.addData("Max pwr: ", robot.lift.pid.getOutputMax());
             telemetry.update();
+
+            /*
+            robot.logger.logD("Teleop",String.format(" Time: %.2f, CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f V:%.2f, Min: %.2f Max: %.2f",
+                    runtime.seconds(),
+                    robot.claw.getCurrentGoal(),
+                    robot.lift.getHeight(),
+                    robot.lift.getGoal(),
+                    robot.lift.getLiftEncoderTicks(),
+                    robot.lift.getTgtPos(),
+                    robot.lift.pwr,
+                    robot.drive.batteryVoltageSensor.getVoltage(),
+                    robot.lift.pid.getOutputMin(),
+                    robot.lift.pid.getOutputMax()));
+            */
         }
     }
 }

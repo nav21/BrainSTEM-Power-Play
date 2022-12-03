@@ -28,6 +28,7 @@ public abstract class BaseAuto extends LinearOpMode {
     public double yModifier = 0.0;
 
     public ElapsedTime runtime = new ElapsedTime();
+    private boolean loggingEnabled = false;
 
     private SignalSleevePosition signalSleevePosition = SignalSleevePosition.TWO;
 
@@ -130,20 +131,20 @@ public abstract class BaseAuto extends LinearOpMode {
         telemetry.addData("Signal Pos", signalSleevePosition);
 
         telemetry.update();
-
-        /*
-        robot.logger.logD("CheckWait",String.format(" Time: %.2f, CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f V:%.2f, Min: %.2f Max: %.2f",
-        runtime.seconds(),
-        robot.claw.getCurrentGoal(),
-        robot.lift.getHeight(),
-        robot.lift.getGoal(),
-        robot.lift.getLiftEncoderTicks(),
-        robot.lift.getTgtPos(),
-        robot.lift.pwr,
-        robot.drive.batteryVoltageSensor.getVoltage(),
-        robot.lift.pid.getOutputMin(),
-        robot.lift.pid.getOutputMax()));
-        */
+        
+        if(loggingEnabled) {
+            robot.logger.logD("CheckWait", String.format(" Time: %.2f, CG: %s, LM: %s, LG:%s, AH: %.0f TH: %.0f LP: %.2f V:%.2f, Min: %.2f Max: %.2f",
+                    runtime.seconds(),
+                    robot.claw.getCurrentGoal(),
+                    robot.lift.getHeight(),
+                    robot.lift.getGoal(),
+                    robot.lift.getLiftEncoderTicks(),
+                    robot.lift.getTgtPos(),
+                    robot.lift.pwr,
+                    robot.drive.batteryVoltageSensor.getVoltage(),
+                    robot.lift.pid.getOutputMin(),
+                    robot.lift.pid.getOutputMax()));
+        }
 
     }
 

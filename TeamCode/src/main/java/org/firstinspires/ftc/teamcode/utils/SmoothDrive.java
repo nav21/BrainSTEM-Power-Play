@@ -183,10 +183,19 @@ public class SmoothDrive {
                 prevStrafe[padIdx] = strafe[padIdx];
                 prevForward[padIdx] = forward[padIdx];
                 prevRotate[padIdx] = rotate[padIdx];
- 
+
+                boolean lessStrafe = true;
                 // Remove 15% deadzone
-                if (strafe[padIdx] >= 0.025) {
-                    strafe[padIdx] = (strafe[padIdx] * 0.85) + 0.15;
+                if(lessStrafe) {
+                    if (strafe[padIdx] >= 0.25) {
+                        strafe[padIdx] = (strafe[padIdx] * 0.85) + 0.15;
+                    } else if (strafe[padIdx] > 0.0) {
+                        strafe[padIdx] = 0.0;
+                    }
+                } else {
+                    if (strafe[padIdx] >= 0.025) {
+                        strafe[padIdx] = (strafe[padIdx] * 0.85) + 0.15;
+                    }
                 }
                 if (forward[padIdx] >= 0.025) {
                     forward[padIdx] = (forward[padIdx] * 0.85) + 0.15;
@@ -194,8 +203,16 @@ public class SmoothDrive {
                 if (rotate[padIdx] >= 0.025) {
                     rotate[padIdx] = (rotate[padIdx] * 0.85) + 0.15;
                 }
-                if (strafe[padIdx] <= -0.025) {
-                    strafe[padIdx] = (strafe[padIdx] * 0.85) - 0.15;
+                if(lessStrafe) {
+                    if (strafe[padIdx] <= -0.25) {
+                        strafe[padIdx] = (strafe[padIdx] * 0.85) - 0.15;
+                    } else if (strafe[padIdx] < 0.0) {
+                        strafe[padIdx] = 0.0 ;
+                    }
+                } else {
+                    if (strafe[padIdx] <= -0.025) {
+                        strafe[padIdx] = (strafe[padIdx] * 0.85) - 0.15;
+                    }
                 }
                 if (forward[padIdx] <= -0.025) {
                     forward[padIdx] = (forward[padIdx] * 0.85) - 0.15;

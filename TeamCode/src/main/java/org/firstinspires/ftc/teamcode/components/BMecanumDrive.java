@@ -119,7 +119,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         // and the placement of the dot/orientation from https://docs.revrobotics.com/rev-control-system/control-system-overview/dimensions#imu-location
         //
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
-        BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+        BNO055IMUUtil.remapZAxis(imu, AxisDirection.POS_Z);
     }
 
     public BMecanumDrive(HardwareMap hardwareMap) {
@@ -142,10 +142,10 @@ public class BMecanumDrive extends MecanumDrive implements Component {
 
         initIMU(hardwareMap);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontAndParallelEncoder");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFrontAndPerpendicularEncoder");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -171,7 +171,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         // TODO: if desired, use setLocalizer() to change the localization method
         //
         //
-        // setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 

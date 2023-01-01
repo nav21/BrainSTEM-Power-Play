@@ -69,7 +69,7 @@ import java.util.List;
 public class BMecanumDrive extends MecanumDrive implements Component {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(3, 0, 0);
-
+    public static double localizer = 1;
     // TODO
     //public static double LATERAL_MULTIPLIER = 1.68;
     public static double LATERAL_MULTIPLIER = 1.161;
@@ -142,10 +142,10 @@ public class BMecanumDrive extends MecanumDrive implements Component {
 
         initIMU(hardwareMap);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFrontAndParallelEncoder");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFrontAndPerpendicularEncoder");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -171,7 +171,12 @@ public class BMecanumDrive extends MecanumDrive implements Component {
         // TODO: if desired, use setLocalizer() to change the localization method
         //
         //
-         setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+//        if (localizer == 1){
+//            setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+//        }
+//        else{
+//
+//        }
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
 

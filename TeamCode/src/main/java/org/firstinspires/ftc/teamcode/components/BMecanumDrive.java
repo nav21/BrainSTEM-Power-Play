@@ -72,7 +72,7 @@ public class BMecanumDrive extends MecanumDrive implements Component {
     public static double localizer = 1;
     // TODO
     //public static double LATERAL_MULTIPLIER = 1.68;
-    public static double LATERAL_MULTIPLIER = 1.161;
+    public static double LATERAL_MULTIPLIER = 1.161/(60.5/59.5);
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
